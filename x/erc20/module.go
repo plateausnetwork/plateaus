@@ -18,9 +18,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/x/erc20/client/cli"
+	"github.com/rhizomplatform/plateaus/x/erc20/keeper"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 // type check to ensure the interface is properly implemented

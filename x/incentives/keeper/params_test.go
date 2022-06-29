@@ -1,6 +1,6 @@
 package keeper_test
 
-import "github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+import "github.com/rhizomplatform/plateaus/x/incentives/types"
 
 func (suite *KeeperTestSuite) TestParams() {
 	params := suite.app.IncentivesKeeper.GetParams(suite.ctx)

@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 // GetEpochInfo returns epoch info by identifier

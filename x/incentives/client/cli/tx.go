@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/incentives/types"
 )
 
 // NewRegisterIncentiveProposalCmd implements the command to submit a register

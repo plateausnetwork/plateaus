@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/claims/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/keeper"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 // InitGenesis initializes the claim module's state from a provided genesis

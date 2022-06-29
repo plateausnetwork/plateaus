@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 var _ types.QueryServer = Keeper{}

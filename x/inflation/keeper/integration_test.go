@@ -8,8 +8,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	epochstypes "github.com/rhizomplatform/plateaus/v6/x/epochs/types"
-	incentivestypes "github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
+	incentivestypes "github.com/rhizomplatform/plateaus/x/incentives/types"
 )
 
 var (

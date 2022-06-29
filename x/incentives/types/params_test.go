@@ -9,7 +9,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	epochstypes "github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 type ParamsTestSuite struct {

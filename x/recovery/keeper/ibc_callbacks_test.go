@@ -8,7 +8,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 	"github.com/evmos/ethermint/tests"
-	"github.com/rhizomplatform/plateaus/v6/testutil"
+	"github.com/rhizomplatform/plateaus/testutil"
 	"github.com/stretchr/testify/mock"
 
 	transfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
@@ -17,11 +17,11 @@ import (
 	ibcgotesting "github.com/cosmos/ibc-go/v3/testing"
 	ibcmock "github.com/cosmos/ibc-go/v3/testing/mock"
 
-	claimstypes "github.com/rhizomplatform/plateaus/v6/x/claims/types"
-	incentivestypes "github.com/rhizomplatform/plateaus/v6/x/incentives/types"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
-	vestingtypes "github.com/rhizomplatform/plateaus/v6/x/vesting/types"
+	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
+	incentivestypes "github.com/rhizomplatform/plateaus/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/keeper"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
+	vestingtypes "github.com/rhizomplatform/plateaus/x/vesting/types"
 )
 
 func (suite *KeeperTestSuite) TestOnRecvPacket() {

@@ -14,9 +14,9 @@ import (
 	ethermint "github.com/evmos/ethermint/types"
 	evm "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/types"
-	vestingtypes "github.com/rhizomplatform/plateaus/v6/x/vesting/types"
+	"github.com/rhizomplatform/plateaus/testutil"
+	"github.com/rhizomplatform/plateaus/x/incentives/types"
+	vestingtypes "github.com/rhizomplatform/plateaus/x/vesting/types"
 )
 
 // ensureHooksSet tries to set the hooks on EVMKeeper, this will fail if the

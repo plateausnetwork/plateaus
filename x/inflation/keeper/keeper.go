@@ -7,7 +7,7 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 // Keeper of the inflation store

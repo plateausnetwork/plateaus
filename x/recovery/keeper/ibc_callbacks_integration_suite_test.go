@@ -15,13 +15,13 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
 	ibcgotesting "github.com/cosmos/ibc-go/v3/testing"
 
-	ibctesting "github.com/rhizomplatform/plateaus/v6/ibc/testing"
+	ibctesting "github.com/rhizomplatform/plateaus/ibc/testing"
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/rhizomplatform/plateaus/v6/app"
-	claimtypes "github.com/rhizomplatform/plateaus/v6/x/claims/types"
-	inflationtypes "github.com/rhizomplatform/plateaus/v6/x/inflation/types"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/app"
+	claimtypes "github.com/rhizomplatform/plateaus/x/claims/types"
+	inflationtypes "github.com/rhizomplatform/plateaus/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 type IBCTestingSuite struct {

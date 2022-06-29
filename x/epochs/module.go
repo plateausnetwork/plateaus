@@ -20,9 +20,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/x/epochs/client/cli"
+	"github.com/rhizomplatform/plateaus/x/epochs/keeper"
+	"github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 var (

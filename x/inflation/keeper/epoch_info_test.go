@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"fmt"
 
-	epochstypes "github.com/rhizomplatform/plateaus/v6/x/epochs/types"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 func (suite *KeeperTestSuite) TestSetGetEpochIdentifier() {

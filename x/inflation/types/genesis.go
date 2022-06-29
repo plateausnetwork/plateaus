@@ -3,7 +3,7 @@ package types
 import (
 	fmt "fmt"
 
-	epochstypes "github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 // NewGenesisState creates a new GenesisState object

@@ -16,9 +16,9 @@ import (
 	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 
-	"github.com/rhizomplatform/plateaus/v6/ibc"
-	evmos "github.com/rhizomplatform/plateaus/v6/types"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/ibc"
+	evmos "github.com/rhizomplatform/plateaus/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 // OnRecvPacket performs an IBC receive callback. It returns the tokens that

@@ -5,9 +5,9 @@ import (
 
 	ethermint "github.com/evmos/ethermint/types"
 
-	evmos "github.com/rhizomplatform/plateaus/v6/types"
-	incentivestypes "github.com/rhizomplatform/plateaus/v6/x/incentives/types"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	evmos "github.com/rhizomplatform/plateaus/types"
+	incentivestypes "github.com/rhizomplatform/plateaus/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 // 200M token at year 4 allocated to the team

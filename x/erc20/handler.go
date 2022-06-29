@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 // NewHandler defines the erc20 module handler instance

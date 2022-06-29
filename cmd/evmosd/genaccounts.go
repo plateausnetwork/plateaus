@@ -23,10 +23,10 @@ import (
 	ethermint "github.com/evmos/ethermint/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	evmoskr "github.com/rhizomplatform/plateaus/v6/crypto/keyring"
+	evmoskr "github.com/rhizomplatform/plateaus/crypto/keyring"
 
-	vestingcli "github.com/rhizomplatform/plateaus/v6/x/vesting/client/cli"
-	vestingtypes "github.com/rhizomplatform/plateaus/v6/x/vesting/types"
+	vestingcli "github.com/rhizomplatform/plateaus/x/vesting/client/cli"
+	vestingtypes "github.com/rhizomplatform/plateaus/x/vesting/types"
 )
 
 const (

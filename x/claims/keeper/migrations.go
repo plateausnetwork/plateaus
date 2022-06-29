@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	v2 "github.com/rhizomplatform/plateaus/v6/x/claims/migrations/v2"
+	v2 "github.com/rhizomplatform/plateaus/x/claims/migrations/v2"
 )
 
 var _ module.MigrationHandler = Migrator{}.Migrate1to2

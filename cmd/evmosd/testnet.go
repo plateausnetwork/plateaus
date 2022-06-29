@@ -43,9 +43,9 @@ import (
 	ethermint "github.com/evmos/ethermint/types"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	cmdcfg "github.com/rhizomplatform/plateaus/v6/cmd/config"
-	evmoskr "github.com/rhizomplatform/plateaus/v6/crypto/keyring"
-	"github.com/rhizomplatform/plateaus/v6/testutil/network"
+	cmdcfg "github.com/rhizomplatform/plateaus/cmd/config"
+	evmoskr "github.com/rhizomplatform/plateaus/crypto/keyring"
+	"github.com/rhizomplatform/plateaus/testutil/network"
 )
 
 var (

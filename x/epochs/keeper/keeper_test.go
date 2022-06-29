@@ -19,8 +19,8 @@ import (
 
 	evm "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/app"
+	"github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 var denomMint = evm.DefaultEVMDenom

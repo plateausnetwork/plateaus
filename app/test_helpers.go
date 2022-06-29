@@ -16,8 +16,8 @@ import (
 	"github.com/evmos/ethermint/encoding"
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	"github.com/rhizomplatform/plateaus/v6/cmd/config"
-	"github.com/rhizomplatform/plateaus/v6/types"
+	"github.com/rhizomplatform/plateaus/cmd/config"
+	"github.com/rhizomplatform/plateaus/types"
 )
 
 func init() {

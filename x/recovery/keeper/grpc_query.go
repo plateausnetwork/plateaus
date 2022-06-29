@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 var _ types.QueryServer = Keeper{}

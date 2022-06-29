@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 // GetParams returns the total set of claim parameters.

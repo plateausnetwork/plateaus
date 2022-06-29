@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 // GetTokenPairs - get all registered token tokenPairs

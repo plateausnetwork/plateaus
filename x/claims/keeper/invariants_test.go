@@ -5,8 +5,8 @@ import (
 
 	"github.com/evmos/ethermint/tests"
 
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/testutil"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 func (suite *KeeperTestSuite) TestClaimsInvariant() {

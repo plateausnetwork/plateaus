@@ -3,8 +3,8 @@ package recovery
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/keeper"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 // InitGenesis import module genesis

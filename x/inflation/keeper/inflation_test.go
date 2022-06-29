@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	ethermint "github.com/evmos/ethermint/types"
-	incentivestypes "github.com/rhizomplatform/plateaus/v6/x/incentives/types"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	incentivestypes "github.com/rhizomplatform/plateaus/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 func (suite *KeeperTestSuite) TestMintAndAllocateInflation() {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 // GetEpochMintProvision gets the current EpochMintProvision

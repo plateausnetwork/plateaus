@@ -3,8 +3,8 @@ package client
 import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/client/rest"
+	"github.com/rhizomplatform/plateaus/x/erc20/client/cli"
+	"github.com/rhizomplatform/plateaus/x/erc20/client/rest"
 )
 
 var (

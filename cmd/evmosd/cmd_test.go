@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	evmosd "github.com/rhizomplatform/plateaus/v6/cmd/evmosd"
+	"github.com/rhizomplatform/plateaus/app"
+	evmosd "github.com/rhizomplatform/plateaus/cmd/evmosd"
 )
 
 func TestInitCmd(t *testing.T) {

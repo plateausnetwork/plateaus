@@ -18,9 +18,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/incentives/client/cli"
+	"github.com/rhizomplatform/plateaus/x/incentives/keeper"
+	"github.com/rhizomplatform/plateaus/x/incentives/types"
 )
 
 // type check to ensure the interface is properly implemented

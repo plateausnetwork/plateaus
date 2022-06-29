@@ -16,9 +16,9 @@ import (
 	"github.com/evmos/ethermint/tests"
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/app"
+	"github.com/rhizomplatform/plateaus/x/erc20"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 type GenesisTestSuite struct {

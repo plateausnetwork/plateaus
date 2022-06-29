@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 func (suite *KeeperTestSuite) TestParams() {

@@ -8,10 +8,10 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/rhizomplatform/plateaus/v6/app"
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	claimtypes "github.com/rhizomplatform/plateaus/v6/x/claims/types"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/app"
+	"github.com/rhizomplatform/plateaus/testutil"
+	claimtypes "github.com/rhizomplatform/plateaus/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 var _ = Describe("Recovery: Performing an IBC Transfer", Ordered, func() {

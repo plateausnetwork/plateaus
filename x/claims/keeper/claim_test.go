@@ -14,10 +14,10 @@ import (
 	"github.com/evmos/ethermint/crypto/ethsecp256k1"
 	"github.com/evmos/ethermint/tests"
 	ethermint "github.com/evmos/ethermint/types"
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	inflationtypes "github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/testutil"
+	inflationtypes "github.com/rhizomplatform/plateaus/x/inflation/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 func (suite *KeeperTestSuite) TestGetClaimableAmountForAction() {

@@ -21,11 +21,11 @@ import (
 
 	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	v5 "github.com/rhizomplatform/plateaus/v6/app/upgrades/v5"
-	evmostypes "github.com/rhizomplatform/plateaus/v6/types"
-	claimskeeper "github.com/rhizomplatform/plateaus/v6/x/claims/keeper"
-	claimstypes "github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/app"
+	v5 "github.com/rhizomplatform/plateaus/app/upgrades/v5"
+	evmostypes "github.com/rhizomplatform/plateaus/types"
+	claimskeeper "github.com/rhizomplatform/plateaus/x/claims/keeper"
+	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 type UpgradeTestSuite struct {

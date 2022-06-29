@@ -12,9 +12,9 @@ import (
 
 	"github.com/evmos/ethermint/encoding"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	v2 "github.com/rhizomplatform/plateaus/v6/x/erc20/migrations/v2"
-	erc20types "github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/app"
+	v2 "github.com/rhizomplatform/plateaus/x/erc20/migrations/v2"
+	erc20types "github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 func TestUpdateParams(t *testing.T) {

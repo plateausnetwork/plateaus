@@ -2,8 +2,8 @@ package inflation
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/keeper"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 // InitGenesis import module genesis

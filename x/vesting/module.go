@@ -18,9 +18,9 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
-	"github.com/rhizomplatform/plateaus/v6/x/vesting/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/vesting/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/vesting/types"
+	"github.com/rhizomplatform/plateaus/x/vesting/client/cli"
+	"github.com/rhizomplatform/plateaus/x/vesting/keeper"
+	"github.com/rhizomplatform/plateaus/x/vesting/types"
 )
 
 var (

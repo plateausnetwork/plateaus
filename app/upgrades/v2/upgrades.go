@@ -5,8 +5,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	claimstypes "github.com/rhizomplatform/plateaus/v6/x/claims/types"
-	erc20types "github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
+	erc20types "github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 // CreateUpgradeHandler creates an SDK upgrade handler for v2

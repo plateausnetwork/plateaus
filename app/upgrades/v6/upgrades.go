@@ -14,9 +14,9 @@ import (
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 	feemarkettypes "github.com/evmos/ethermint/x/feemarket/types"
 
-	v5 "github.com/rhizomplatform/plateaus/v6/app/upgrades/v5"
-	"github.com/rhizomplatform/plateaus/v6/types"
-	claimskeeper "github.com/rhizomplatform/plateaus/v6/x/claims/keeper"
+	v5 "github.com/rhizomplatform/plateaus/app/upgrades/v5"
+	"github.com/rhizomplatform/plateaus/types"
+	claimskeeper "github.com/rhizomplatform/plateaus/x/claims/keeper"
 )
 
 // CreateUpgradeHandler creates an SDK upgrade handler for v5

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rhizomplatform/plateaus/v6/x/epochs"
-	"github.com/rhizomplatform/plateaus/v6/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/x/epochs"
+	"github.com/rhizomplatform/plateaus/x/epochs/types"
 )
 
 func (suite *KeeperTestSuite) TestEpochInfoChangesBeginBlockerAndInitGenesis() {

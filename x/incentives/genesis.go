@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/incentives/keeper"
+	"github.com/rhizomplatform/plateaus/x/incentives/types"
 )
 
 // InitGenesis import module genesis

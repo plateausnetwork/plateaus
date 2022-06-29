@@ -13,10 +13,10 @@ import (
 	ibcgotesting "github.com/cosmos/ibc-go/v3/testing"
 
 	"github.com/evmos/ethermint/tests"
-	"github.com/rhizomplatform/plateaus/v6/app"
-	ibctesting "github.com/rhizomplatform/plateaus/v6/ibc/testing"
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/app"
+	ibctesting "github.com/rhizomplatform/plateaus/ibc/testing"
+	"github.com/rhizomplatform/plateaus/testutil"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 type IBCTestingSuite struct {

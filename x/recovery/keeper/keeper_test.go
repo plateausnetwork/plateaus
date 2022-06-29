@@ -17,9 +17,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	claimstypes "github.com/rhizomplatform/plateaus/v6/x/claims/types"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/app"
+	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 var (

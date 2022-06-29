@@ -9,8 +9,8 @@ import (
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 
 	"github.com/evmos/ethermint/tests"
-	"github.com/rhizomplatform/plateaus/v6/contracts"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/contracts"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 // ensureHooksSet tries to set the hooks on EVMKeeper, this will fail if the erc20 hook is already set

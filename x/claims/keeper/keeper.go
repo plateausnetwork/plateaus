@@ -11,7 +11,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 // Keeper struct

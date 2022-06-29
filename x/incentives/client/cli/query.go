@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
 
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/incentives/types"
 )
 
 // GetQueryCmd returns the parent command for all incentives CLI query commands.

@@ -6,7 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/evmos/ethermint/tests"
 
-	"github.com/rhizomplatform/plateaus/v6/x/incentives/types"
+	"github.com/rhizomplatform/plateaus/x/incentives/types"
 )
 
 func (suite *KeeperTestSuite) TestGetIncentivesGasMeters() {

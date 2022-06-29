@@ -6,8 +6,8 @@ import (
 	"github.com/armon/go-metrics"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	epochstypes "github.com/rhizomplatform/plateaus/v6/x/epochs/types"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 // BeforeEpochStart: noop, We don't need to do anything here

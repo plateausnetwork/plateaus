@@ -14,9 +14,9 @@ import (
 	"github.com/evmos/ethermint/encoding"
 	ethermint "github.com/evmos/ethermint/types"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/app"
+	"github.com/rhizomplatform/plateaus/testutil"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	abci "github.com/tendermint/tendermint/abci/types"

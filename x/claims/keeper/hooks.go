@@ -13,7 +13,7 @@ import (
 
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 var (

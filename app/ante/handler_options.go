@@ -14,7 +14,7 @@ import (
 	ethante "github.com/evmos/ethermint/app/ante"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	vestingtypes "github.com/rhizomplatform/plateaus/v6/x/vesting/types"
+	vestingtypes "github.com/rhizomplatform/plateaus/x/vesting/types"
 )
 
 // HandlerOptions defines the list of module keepers required to run the Evmos

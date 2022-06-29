@@ -12,9 +12,9 @@ import (
 	"github.com/evmos/ethermint/tests"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
-	inflationtypes "github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/erc20/keeper"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
+	inflationtypes "github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 const (

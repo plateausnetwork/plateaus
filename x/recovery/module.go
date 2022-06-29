@@ -19,9 +19,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/x/recovery/client/cli"
+	"github.com/rhizomplatform/plateaus/x/recovery/keeper"
+	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
 // type check to ensure the interface is properly implemented

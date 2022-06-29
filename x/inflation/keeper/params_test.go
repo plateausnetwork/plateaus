@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 func (suite *KeeperTestSuite) TestParams() {

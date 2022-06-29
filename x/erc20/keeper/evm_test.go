@@ -8,9 +8,9 @@ import (
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/rhizomplatform/plateaus/v6/contracts"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/erc20/types"
+	"github.com/rhizomplatform/plateaus/contracts"
+	"github.com/rhizomplatform/plateaus/x/erc20/keeper"
+	"github.com/rhizomplatform/plateaus/x/erc20/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryERC20() {

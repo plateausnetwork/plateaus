@@ -19,9 +19,9 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/client/cli"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/x/inflation/client/cli"
+	"github.com/rhizomplatform/plateaus/x/inflation/keeper"
+	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
 
 // type check to ensure the interface is properly implemented

@@ -23,10 +23,10 @@ import (
 	"github.com/evmos/ethermint/encoding"
 	"github.com/evmos/ethermint/tests"
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
-	"github.com/rhizomplatform/plateaus/v6/app"
-	"github.com/rhizomplatform/plateaus/v6/testutil"
-	incentivestypes "github.com/rhizomplatform/plateaus/v6/x/incentives/types"
-	inflationtypes "github.com/rhizomplatform/plateaus/v6/x/inflation/types"
+	"github.com/rhizomplatform/plateaus/app"
+	"github.com/rhizomplatform/plateaus/testutil"
+	incentivestypes "github.com/rhizomplatform/plateaus/x/incentives/types"
+	inflationtypes "github.com/rhizomplatform/plateaus/x/inflation/types"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -34,8 +34,8 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/evmos/ethermint/server/config"
 	evm "github.com/evmos/ethermint/x/evm/types"
-	"github.com/rhizomplatform/plateaus/v6/contracts"
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/contracts"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 

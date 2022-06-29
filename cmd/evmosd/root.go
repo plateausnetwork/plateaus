@@ -39,9 +39,9 @@ import (
 	servercfg "github.com/evmos/ethermint/server/config"
 	srvflags "github.com/evmos/ethermint/server/flags"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	cmdcfg "github.com/rhizomplatform/plateaus/v6/cmd/config"
-	evmoskr "github.com/rhizomplatform/plateaus/v6/crypto/keyring"
+	"github.com/rhizomplatform/plateaus/app"
+	cmdcfg "github.com/rhizomplatform/plateaus/cmd/config"
+	evmoskr "github.com/rhizomplatform/plateaus/crypto/keyring"
 )
 
 const (

@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/rhizomplatform/plateaus/v6/x/claims/keeper"
-	"github.com/rhizomplatform/plateaus/v6/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/claims/keeper"
+	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
 // NewHandler returns claim module messages

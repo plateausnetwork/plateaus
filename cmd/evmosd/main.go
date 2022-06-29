@@ -7,8 +7,8 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/rhizomplatform/plateaus/v6/app"
-	cmdcfg "github.com/rhizomplatform/plateaus/v6/cmd/config"
+	"github.com/rhizomplatform/plateaus/app"
+	cmdcfg "github.com/rhizomplatform/plateaus/cmd/config"
 )
 
 func main() {
