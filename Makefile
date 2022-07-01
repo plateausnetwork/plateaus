@@ -16,7 +16,7 @@ SIMAPP = ./app
 HTTPS_GIT := https://github.com/rhizomplatform/plateaus.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
-NAMESPACE := tharsishq
+NAMESPACE := rhizomplatform
 PROJECT := plateaus
 DOCKER_IMAGE := $(NAMESPACE)/$(PROJECT)
 COMMIT_HASH := $(shell git rev-parse --short=7 HEAD)
@@ -146,7 +146,7 @@ build-docker:
 	# update old container
 	$(DOCKER) rm plateaus || true
 	# create a new container from the latest image
-	$(DOCKER) create --name plateaus -t -i ${DOCKER_IMAGE}:latest plateaus
+	$(DOCKER) create --name plateaus -t -i ${DOCKER_IMAGE}:latest plateausd
 	# move the binaries to the ./build directory
 	mkdir -p ./build/
 	$(DOCKER) cp plateaus:/usr/bin/plateausd ./build/
@@ -526,13 +526,13 @@ ifeq ($(OS),Windows_NT)
 	mkdir localnet-setup &
 	@$(MAKE) localnet-build
 
-	IF not exist "build/node0/$(PLATEAUS_BINARY)/config/genesis.json" docker run --rm -v $(CURDIR)/build\plateaus\Z plateausd/node "./plateausd testnet --v 4 -o /plateaus --keyring-backend=test --ip-addresses plateausnode0d,plateausnode1d,plateausnode2d,plateausnode3d"
+	IF not exist "build/node0/$(PLATEAUS_BINARY)/config/genesis.json" docker run --rm -v $(CURDIR)/build\plateaus\Z plateaus/node "./plateausd testnet --v 4 -o /plateaus --keyring-backend=test --ip-addresses plateausnode0d,plateausnode1d,plateausnode2d,plateausnode3d"
 	docker-compose up -d
 else
 	mkdir -p localnet-setup
 	@$(MAKE) localnet-build
 
-	if ! [ -f localnet-setup/node0/$(PLATEAUS_BINARY)/config/genesis.json ]; then docker run --rm -v $(CURDIR)/localnet-setup:/plateaus:Z plateausd/node "./plateausd testnet --v 4 -o /plateaus --keyring-backend=test --ip-addresses plateausnode0d,plateausnode1d,plateausnode2d,plateausnode3d"; fi
+	if ! [ -f localnet-setup/node0/$(PLATEAUS_BINARY)/config/genesis.json ]; then docker run --rm -v $(CURDIR)/localnet-setup:/plateaus:Z plateaus/node "./plateausd testnet --v 4 -o /plateaus --keyring-backend=test --ip-addresses plateausnode0d,plateausnode1d,plateausnode2d,plateausnode3d"; fi
 	docker-compose up -d
 endif
 
@@ -549,15 +549,15 @@ localnet-clean:
 localnet-unsafe-reset:
 	docker-compose down
 ifeq ($(OS),Windows_NT)
-	@docker run --rm -v $(CURDIR)\localnet-setup\node0\plateausd:plateaus\Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
-	@docker run --rm -v $(CURDIR)\localnet-setup\node1\plateausd:plateaus\Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
-	@docker run --rm -v $(CURDIR)\localnet-setup\node2\plateausd:plateaus\Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
-	@docker run --rm -v $(CURDIR)\localnet-setup\node3\plateausd:plateaus\Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)\localnet-setup\node0\plateausd:plateaus\Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)\localnet-setup\node1\plateausd:plateaus\Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)\localnet-setup\node2\plateausd:plateaus\Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)\localnet-setup\node3\plateausd:plateaus\Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
 else
-	@docker run --rm -v $(CURDIR)/localnet-setup/node0/plateausd:/plateaus:Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
-	@docker run --rm -v $(CURDIR)/localnet-setup/node1/plateausd:/plateaus:Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
-	@docker run --rm -v $(CURDIR)/localnet-setup/node2/plateausd:/plateaus:Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
-	@docker run --rm -v $(CURDIR)/localnet-setup/node3/plateausd:/plateaus:Z plateausd/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)/localnet-setup/node0/plateausd:/plateaus:Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)/localnet-setup/node1/plateausd:/plateaus:Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)/localnet-setup/node2/plateausd:/plateaus:Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
+	@docker run --rm -v $(CURDIR)/localnet-setup/node3/plateausd:/plateaus:Z plateaus/node "./plateausd unsafe-reset-all --home=/plateaus"
 endif
 
 # Clean testnet

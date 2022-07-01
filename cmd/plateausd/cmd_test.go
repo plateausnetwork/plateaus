@@ -10,11 +10,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/rhizomplatform/plateaus/app"
-	evmosd "github.com/rhizomplatform/plateaus/cmd/evmosd"
+	plateausd "github.com/rhizomplatform/plateaus/cmd/plateausd"
 )
 
 func TestInitCmd(t *testing.T) {
-	rootCmd, _ := evmosd.NewRootCmd()
+	rootCmd, _ := plateausd.NewRootCmd()
 	rootCmd.SetArgs([]string{
 		"init",       // Test the init cmd
 		"evmos-test", // Moniker
@@ -27,7 +27,7 @@ func TestInitCmd(t *testing.T) {
 }
 
 func TestAddKeyLedgerCmd(t *testing.T) {
-	rootCmd, _ := evmosd.NewRootCmd()
+	rootCmd, _ := plateausd.NewRootCmd()
 	rootCmd.SetArgs([]string{
 		"keys",
 		"add",

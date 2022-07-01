@@ -1,0 +1,65 @@
+version: "3.4"
+
+services:
+  plateausnode0d:
+    image: "plateaus/node:latest"
+    environment:
+      - ID=0
+      - LOG=${LOG:-plateaus.log}
+    ports:
+      - "26657:26657"
+      - "8545:8545"
+      - "8546:8546"
+      - "8125:8125"
+    volumes:
+      - ./build/:/root/.plateusd
+    networks:
+      - localnet
+    entrypoint: "bash start-docker.sh"
+  plateausnode1d:
+    image: "plateaus/node:latest"
+    environment:
+      - ID=1
+      - LOG=${LOG:-plateaus.log}
+    ports:
+      - "26658:26657"
+      - "8555:8545"
+      - "8556:8546"
+      - "8126:8125"
+    volumes:
+      - ./build/:/root/.plateusd
+    networks:
+      - localnet
+    entrypoint: "bash start-docker.sh"
+  plateausnode2d:
+    image: "plateaus/node:latest"
+    environment:
+      - ID=2
+      - LOG=${LOG:-plateaus.log}
+    ports:
+      - "26659:26657"
+      - "8565:8545"
+      - "8566:8546"
+      - "8127:8125"
+    volumes:
+      - ./build/:/root/.plateusd
+    networks:
+      - localnet
+    entrypoint: "bash start-docker.sh"
+  plateausnode3d:
+    image: "plateaus/node:latest"
+    environment:
+      - ID=3
+      - LOG=${LOG:-plateaus.log}
+    ports:
+      - "26660:26657"
+      - "8575:8545"
+      - "8576:8546"
+      - "8128:8125"
+    volumes:
+      - ./build/:/root/.plateusd
+    networks:
+      - localnet
+    entrypoint: "bash start-docker.sh"
+networks:
+  localnet:
