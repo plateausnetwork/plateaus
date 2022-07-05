@@ -1,18 +1,18 @@
 accounts:
   - name: alice
-    coins: ["100000000uatom", "100000000000000000000aevmos"]
+    coins: ["100000000uatom", "100000000000000000000axrz"]
   - name: bob
-    coins: ["5000000000000aevmos"]
+    coins: ["5000000000000axrz"]
 validator:
   name: alice
-  staked: "100000000000000000000aevmos"
+  staked: "100000000000000000000axrz"
 faucet:
   name: bob 
-  coins: ["10aevmos"]
+  coins: ["10axrz"]
 build:
-  binary: "evmosd"
+  binary: "plateausd"
 init:
-  home: "$HOME/.evmosd"
+  home: "$HOME/.plateausd"
   app:
     evm-rpc:
       address: "0.0.0.0:8545"     # change the JSON-RPC address and port
@@ -22,18 +22,18 @@ genesis:
   app_state:
     staking:
       params:
-        bond_denom: "aevmos"
+        bond_denom: "axrz"
     mint:
       params:
-        mint_denom: "aevmos"
+        mint_denom: "axrz"
     crisis:
       constant_fee:
-        denom: "aevmos"
+        denom: "axrz"
     gov:
       deposit_params:
         min_deposit:
           - amount: "10000000"
-            denom: "aevmos"
+            denom: "axrz"
     evm:
       params:
-        evm_denom: "aevmos"
+        evm_denom: "axrz"
