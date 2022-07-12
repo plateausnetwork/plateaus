@@ -17,10 +17,10 @@ RPC_PORT="854"
 IP_ADDR="0.0.0.0"
 
 KEY="mykey"
-CHAINID="evmos_9000-1"
+CHAINID="plateaus_9000-1"
 MONIKER="mymoniker"
 
-## default port prefixes for evmosd
+## default port prefixes for plateausd
 NODE_P2P_PORT="2660"
 NODE_PORT="2663"
 NODE_RPC_PORT="2666"
@@ -52,29 +52,29 @@ done
 
 set -euxo pipefail
 
-DATA_DIR=$(mktemp -d -t evmos-datadir.XXXXX)
+DATA_DIR=$(mktemp -d -t plateaus-datadir.XXXXX)
 
 if [[ ! "$DATA_DIR" ]]; then
     echo "Could not create $DATA_DIR"
     exit 1
 fi
 
-# Compile evmos
-echo "compiling evmos"
+# Compile plateaus
+echo "compiling plateaus"
 make build
 
 # PID array declaration
 arr=()
 
 init_func() {
-    "$PWD"/build/evmosd keys add $KEY"$i" --keyring-backend test --home "$DATA_DIR$i" --no-backup --algo "eth_secp256k1"
-    "$PWD"/build/evmosd init $MONIKER --chain-id $CHAINID --home "$DATA_DIR$i"
-    "$PWD"/build/evmosd add-genesis-account \
-    "$("$PWD"/build/evmosd keys show "$KEY$i" --keyring-backend test -a --home "$DATA_DIR$i")" 1000000000000000000aevmos,1000000000000000000stake \
+    "$PWD"/build/plateausd keys add $KEY"$i" --keyring-backend test --home "$DATA_DIR$i" --no-backup --algo "eth_secp256k1"
+    "$PWD"/build/plateausd init $MONIKER --chain-id $CHAINID --home "$DATA_DIR$i"
+    "$PWD"/build/plateausd add-genesis-account \
+    "$("$PWD"/build/plateausd keys show "$KEY$i" --keyring-backend test -a --home "$DATA_DIR$i")" 1000000000000000000axrz,1000000000000000000stake \
     --keyring-backend test --home "$DATA_DIR$i"
-    "$PWD"/build/evmosd gentx "$KEY$i" 1000000000000000000stake --chain-id $CHAINID --keyring-backend test --home "$DATA_DIR$i"
-    "$PWD"/build/evmosd collect-gentxs --home "$DATA_DIR$i"
-    "$PWD"/build/evmosd validate-genesis --home "$DATA_DIR$i"
+    "$PWD"/build/plateausd gentx "$KEY$i" 1000000000000000000stake --chain-id $CHAINID --keyring-backend test --home "$DATA_DIR$i"
+    "$PWD"/build/plateausd collect-gentxs --home "$DATA_DIR$i"
+    "$PWD"/build/plateausd validate-genesis --home "$DATA_DIR$i"
 
     if [[ $MODE == "pending" ]]; then
       ls $DATA_DIR$i
@@ -103,17 +103,17 @@ init_func() {
 }
 
 start_func() {
-    echo "starting evmos node $i in background ..."
-    "$PWD"/build/evmosd start --pruning=nothing --rpc.unsafe \
+    echo "starting plateaus node $i in background ..."
+    "$PWD"/build/plateausd start --pruning=nothing --rpc.unsafe \
     --p2p.laddr tcp://$IP_ADDR:$NODE_P2P_PORT"$i" --address tcp://$IP_ADDR:$NODE_PORT"$i" --rpc.laddr tcp://$IP_ADDR:$NODE_RPC_PORT"$i" \
     --json-rpc.address=$IP_ADDR:$RPC_PORT"$i" \
     --keyring-backend test --home "$DATA_DIR$i" \
     >"$DATA_DIR"/node"$i".log 2>&1 & disown
 
-    EVMOS_PID=$!
-    echo "started evmos node, pid=$EVMOS_PID"
+    PLATEAUS_PID=$!
+    echo "started plateaus node, pid=$PLATEAUS_PID"
     # add PID to array
-    arr+=("$EVMOS_PID")
+    arr+=("$PLATEAUS_PID")
 
     if [[ $MODE == "pending" ]]; then
       echo "waiting for the first block..."
@@ -147,7 +147,7 @@ if [[ -z $TEST || $TEST == "rpc" ||  $TEST == "pending" ]]; then
 
     for i in $(seq 1 "$TEST_QTD"); do
         HOST_RPC=http://$IP_ADDR:$RPC_PORT"$i"
-        echo "going to test evmos node $HOST_RPC ..."
+        echo "going to test plateaus node $HOST_RPC ..."
         MODE=$MODE HOST=$HOST_RPC go test ./tests/... -timeout=$time_out -v -short
 
         RPC_FAIL=$?
@@ -156,12 +156,12 @@ if [[ -z $TEST || $TEST == "rpc" ||  $TEST == "pending" ]]; then
 fi
 
 stop_func() {
-    EVMOS_PID=$i
-    echo "shutting down node, pid=$EVMOS_PID ..."
+    PLATEAUS_PID=$i
+    echo "shutting down node, pid=$PLATEAUS_PID ..."
 
-    # Shutdown evmos node
-    kill -9 "$EVMOS_PID"
-    wait "$EVMOS_PID"
+    # Shutdown plateaus node
+    kill -9 "$PLATEAUS_PID"
+    wait "$PLATEAUS_PID"
 
     if [ $REMOVE_DATA_DIR == "true" ]
     then

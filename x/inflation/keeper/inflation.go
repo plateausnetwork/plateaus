@@ -5,7 +5,7 @@ import (
 
 	ethermint "github.com/evmos/ethermint/types"
 
-	evmos "github.com/rhizomplatform/plateaus/types"
+	plateaus "github.com/rhizomplatform/plateaus/types"
 	incentivestypes "github.com/rhizomplatform/plateaus/x/incentives/types"
 	"github.com/rhizomplatform/plateaus/x/inflation/types"
 )
@@ -117,7 +117,7 @@ func (k Keeper) GetProportions(
 func (k Keeper) BondedRatio(ctx sdk.Context) sdk.Dec {
 	stakeSupply := k.stakingKeeper.StakingTokenSupply(ctx)
 
-	isMainnet := evmos.IsMainnet(ctx.ChainID())
+	isMainnet := plateaus.IsMainnet(ctx.ChainID())
 
 	if !stakeSupply.IsPositive() || (isMainnet && stakeSupply.LTE(teamAlloc)) {
 		return sdk.ZeroDec()
@@ -140,7 +140,7 @@ func (k Keeper) GetCirculatingSupply(ctx sdk.Context) sdk.Dec {
 	teamAllocation := teamAlloc.ToDec()
 
 	// Consider team allocation only on mainnet chain id
-	if evmos.IsMainnet(ctx.ChainID()) {
+	if plateaus.IsMainnet(ctx.ChainID()) {
 		circulatingSupply = circulatingSupply.Sub(teamAllocation)
 	}
 

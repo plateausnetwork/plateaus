@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 
 	"github.com/rhizomplatform/plateaus/ibc"
-	evmos "github.com/rhizomplatform/plateaus/types"
+	plateaus "github.com/rhizomplatform/plateaus/types"
 	"github.com/rhizomplatform/plateaus/x/claims/types"
 )
 
@@ -84,7 +84,7 @@ func (k Keeper) OnRecvPacket(
 	}
 
 	// Get bech32 address from the counterparty and change the bech32 human
-	// readable prefix (HRP) of the sender to `evmos1`
+	// readable prefix (HRP) of the sender to `xrz1`
 	sender, recipient, senderBech32, recipientBech32, err := ibc.GetTransferSenderRecipient(packet)
 	if err != nil {
 		return channeltypes.NewErrorAcknowledgement(err.Error())
@@ -114,7 +114,7 @@ func (k Keeper) OnRecvPacket(
 	// If the packet is sent from a non-EVM chain, the sender address is not an
 	// ethereum key (i.e. `ethsecp256k1`). Thus, if `sameAddress` is true, the
 	// recipient address must be a non-ethereum key as well, which is not
-	// supported on Evmos. To prevent funds getting stuck, return an error, unless
+	// supported on Plateaus. To prevent funds getting stuck, return an error, unless
 	// the destination channel from a connection to a chain is EVM-compatible or
 	// supports ethereum keys (eg: Cronos, Injective).
 	if sameAddress && !fromEVMChain {
@@ -124,7 +124,7 @@ func (k Keeper) OnRecvPacket(
 			// -> return error acknowledgement to prevent funds from getting stuck
 			return channeltypes.NewErrorAcknowledgement(
 				sdkerrors.Wrapf(
-					evmos.ErrKeyTypeNotSupported, "receiver address %s is not a valid ethereum address", recipientBech32,
+					plateaus.ErrKeyTypeNotSupported, "receiver address %s is not a valid ethereum address", recipientBech32,
 				).Error(),
 			)
 		default:

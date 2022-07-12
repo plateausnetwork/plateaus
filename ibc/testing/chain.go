@@ -23,8 +23,8 @@ import (
 	evmtypes "github.com/evmos/ethermint/x/evm/types"
 )
 
-// ChainIDPrefix defines the default chain ID prefix for Evmos test chains
-var ChainIDPrefix = "evmos_9000-"
+// ChainIDPrefix defines the default chain ID prefix for Plateaus test chains
+var ChainIDPrefix = "plateaus_9000-"
 
 func init() {
 	ibcgotesting.ChainIDPrefix = ChainIDPrefix

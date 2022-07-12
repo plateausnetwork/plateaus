@@ -1,13 +1,13 @@
 #!/bin/bash
 
 KEY="mykey"
-CHAINID="evmos_9000-1"
+CHAINID="plateaus_9000-1"
 MONIKER="mymoniker"
 DATA_DIR=$(mktemp -d -t plateaus-datadir.XXXXX)
 
 echo "create and add new keys"
 ./plateausd keys add $KEY --home $DATA_DIR --no-backup --chain-id $CHAINID --algo "eth_secp256k1" --keyring-backend test
-echo "init Evmos with moniker=$MONIKER and chain-id=$CHAINID"
+echo "init Plateaus with moniker=$MONIKER and chain-id=$CHAINID"
 ./plateausd init $MONIKER --chain-id $CHAINID --home $DATA_DIR
 echo "prepare genesis: Allocate genesis accounts"
 ./plateausd add-genesis-account \

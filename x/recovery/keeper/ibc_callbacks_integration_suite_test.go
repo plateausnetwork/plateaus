@@ -29,13 +29,13 @@ type IBCTestingSuite struct {
 	coordinator *ibcgotesting.Coordinator
 
 	// testing chains used for convenience and readability
-	EvmosChain      *ibcgotesting.TestChain
+	PlateausChain   *ibcgotesting.TestChain
 	IBCOsmosisChain *ibcgotesting.TestChain
 	IBCCosmosChain  *ibcgotesting.TestChain
 
-	pathOsmosisEvmos  *ibcgotesting.Path
-	pathCosmosEvmos   *ibcgotesting.Path
-	pathOsmosisCosmos *ibcgotesting.Path
+	pathOsmosisPlateaus *ibcgotesting.Path
+	pathCosmosPlateaus  *ibcgotesting.Path
+	pathOsmosisCosmos   *ibcgotesting.Path
 }
 
 var s *IBCTestingSuite
@@ -52,22 +52,22 @@ func TestIBCTestingSuite(t *testing.T) {
 func (suite *IBCTestingSuite) SetupTest() {
 	// initializes 3 test chains
 	suite.coordinator = ibctesting.NewCoordinator(suite.T(), 1, 2)
-	suite.EvmosChain = suite.coordinator.GetChain(ibcgotesting.GetChainID(1))
+	suite.PlateausChain = suite.coordinator.GetChain(ibcgotesting.GetChainID(1))
 	suite.IBCOsmosisChain = suite.coordinator.GetChain(ibcgotesting.GetChainID(2))
 	suite.IBCCosmosChain = suite.coordinator.GetChain(ibcgotesting.GetChainID(3))
-	suite.coordinator.CommitNBlocks(suite.EvmosChain, 2)
+	suite.coordinator.CommitNBlocks(suite.PlateausChain, 2)
 	suite.coordinator.CommitNBlocks(suite.IBCOsmosisChain, 2)
 	suite.coordinator.CommitNBlocks(suite.IBCCosmosChain, 2)
 
-	// Mint coins locked on the evmos account generated with secp.
-	coinEvmos := sdk.NewCoin("aevmos", sdk.NewInt(10000))
-	coins := sdk.NewCoins(coinEvmos)
-	err := suite.EvmosChain.App.(*app.Plateaus).BankKeeper.MintCoins(suite.EvmosChain.GetContext(), inflationtypes.ModuleName, coins)
+	// Mint coins locked on the plateaus account generated with secp.
+	coinPlateaus := sdk.NewCoin("axrz", sdk.NewInt(10000))
+	coins := sdk.NewCoins(coinPlateaus)
+	err := suite.PlateausChain.App.(*app.Plateaus).BankKeeper.MintCoins(suite.PlateausChain.GetContext(), inflationtypes.ModuleName, coins)
 	suite.Require().NoError(err)
-	err = suite.EvmosChain.App.(*app.Plateaus).BankKeeper.SendCoinsFromModuleToAccount(suite.EvmosChain.GetContext(), inflationtypes.ModuleName, suite.IBCOsmosisChain.SenderAccount.GetAddress(), coins)
+	err = suite.PlateausChain.App.(*app.Plateaus).BankKeeper.SendCoinsFromModuleToAccount(suite.PlateausChain.GetContext(), inflationtypes.ModuleName, suite.IBCOsmosisChain.SenderAccount.GetAddress(), coins)
 	suite.Require().NoError(err)
 
-	// Mint coins on the osmosis side which we'll use to unlock our aevmos
+	// Mint coins on the osmosis side which we'll use to unlock our axrz
 	coinOsmo := sdk.NewCoin("uosmo", sdk.NewInt(10))
 	coins = sdk.NewCoins(coinOsmo)
 	err = suite.IBCOsmosisChain.GetSimApp().BankKeeper.MintCoins(suite.IBCOsmosisChain.GetContext(), minttypes.ModuleName, coins)
@@ -75,7 +75,7 @@ func (suite *IBCTestingSuite) SetupTest() {
 	err = suite.IBCOsmosisChain.GetSimApp().BankKeeper.SendCoinsFromModuleToAccount(suite.IBCOsmosisChain.GetContext(), minttypes.ModuleName, suite.IBCOsmosisChain.SenderAccount.GetAddress(), coins)
 	suite.Require().NoError(err)
 
-	// Mint coins on the cosmos side which we'll use to unlock our aevmos
+	// Mint coins on the cosmos side which we'll use to unlock our axrz
 	coinAtom := sdk.NewCoin("uatom", sdk.NewInt(10))
 	coins = sdk.NewCoins(coinAtom)
 	err = suite.IBCCosmosChain.GetSimApp().BankKeeper.MintCoins(suite.IBCCosmosChain.GetContext(), minttypes.ModuleName, coins)
@@ -84,23 +84,23 @@ func (suite *IBCTestingSuite) SetupTest() {
 	suite.Require().NoError(err)
 
 	claimparams := claimtypes.DefaultParams()
-	claimparams.AirdropStartTime = suite.EvmosChain.GetContext().BlockTime()
+	claimparams.AirdropStartTime = suite.PlateausChain.GetContext().BlockTime()
 	claimparams.EnableClaims = true
-	suite.EvmosChain.App.(*app.Plateaus).ClaimsKeeper.SetParams(suite.EvmosChain.GetContext(), claimparams)
+	suite.PlateausChain.App.(*app.Plateaus).ClaimsKeeper.SetParams(suite.PlateausChain.GetContext(), claimparams)
 
 	params := types.DefaultParams()
 	params.EnableRecovery = true
-	suite.EvmosChain.App.(*app.Plateaus).RecoveryKeeper.SetParams(suite.EvmosChain.GetContext(), params)
+	suite.PlateausChain.App.(*app.Plateaus).RecoveryKeeper.SetParams(suite.PlateausChain.GetContext(), params)
 
-	suite.pathOsmosisEvmos = ibctesting.NewTransferPath(suite.IBCOsmosisChain, suite.EvmosChain) // clientID, connectionID, channelID empty
-	suite.pathCosmosEvmos = ibctesting.NewTransferPath(suite.IBCCosmosChain, suite.EvmosChain)
+	suite.pathOsmosisPlateaus = ibctesting.NewTransferPath(suite.IBCOsmosisChain, suite.PlateausChain) // clientID, connectionID, channelID empty
+	suite.pathCosmosPlateaus = ibctesting.NewTransferPath(suite.IBCCosmosChain, suite.PlateausChain)
 	suite.pathOsmosisCosmos = ibctesting.NewTransferPath(suite.IBCCosmosChain, suite.IBCOsmosisChain)
-	suite.coordinator.Setup(suite.pathOsmosisEvmos) // clientID, connectionID, channelID filled
-	suite.coordinator.Setup(suite.pathCosmosEvmos)
+	suite.coordinator.Setup(suite.pathOsmosisPlateaus) // clientID, connectionID, channelID filled
+	suite.coordinator.Setup(suite.pathCosmosPlateaus)
 	suite.coordinator.Setup(suite.pathOsmosisCosmos)
-	suite.Require().Equal("07-tendermint-0", suite.pathOsmosisEvmos.EndpointA.ClientID)
-	suite.Require().Equal("connection-0", suite.pathOsmosisEvmos.EndpointA.ConnectionID)
-	suite.Require().Equal("channel-0", suite.pathOsmosisEvmos.EndpointA.ChannelID)
+	suite.Require().Equal("07-tendermint-0", suite.pathOsmosisPlateaus.EndpointA.ClientID)
+	suite.Require().Equal("connection-0", suite.pathOsmosisPlateaus.EndpointA.ConnectionID)
+	suite.Require().Equal("channel-0", suite.pathOsmosisPlateaus.EndpointA.ChannelID)
 }
 
 var (
@@ -119,11 +119,11 @@ var (
 	}
 	uatomIbcdenom = uatomDenomtrace.IBCDenom()
 
-	aevmosDenomtrace = transfertypes.DenomTrace{
+	axrzDenomtrace = transfertypes.DenomTrace{
 		Path:      "transfer/channel-0",
-		BaseDenom: "aevmos",
+		BaseDenom: "axrz",
 	}
-	aevmosIbcdenom = aevmosDenomtrace.IBCDenom()
+	axrzIbcdenom = axrzDenomtrace.IBCDenom()
 
 	uatomOsmoDenomtrace = transfertypes.DenomTrace{
 		Path:      "transfer/channel-0/transfer/channel-1",

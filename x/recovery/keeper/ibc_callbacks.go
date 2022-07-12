@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	plateaus "github.com/rhizomplatform/plateaus/types"
 	"strings"
 
 	"github.com/armon/go-metrics"
@@ -17,7 +18,6 @@ import (
 	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 
 	"github.com/rhizomplatform/plateaus/ibc"
-	evmos "github.com/rhizomplatform/plateaus/types"
 	"github.com/rhizomplatform/plateaus/x/recovery/types"
 )
 
@@ -27,7 +27,7 @@ import (
 //
 // First transfer from authorized source chain:
 //  - sends back IBC tokens which originated from the source chain
-//  - sends over all Evmos native tokens
+//  - sends over all Plateaus native tokens
 // Second transfer from a different authorized source chain:
 //  - only sends back IBC tokens which originated from the source chain
 func (k Keeper) OnRecvPacket(
@@ -50,7 +50,7 @@ func (k Keeper) OnRecvPacket(
 		return ack
 	}
 
-	// Get addresses in `evmos1` and the original bech32 format
+	// Get addresses in `xrz1` and the original bech32 format
 	sender, recipient, senderBech32, recipientBech32, err := ibc.GetTransferSenderRecipient(packet)
 	if err != nil {
 		return channeltypes.NewErrorAcknowledgement(err.Error())
@@ -68,7 +68,7 @@ func (k Keeper) OnRecvPacket(
 	}
 
 	// Check if sender != recipient, as recovery is only possible for transfers to
-	// a sender's own account on Evmos (sender == recipient)
+	// a sender's own account on Plateaus (sender == recipient)
 	if !sender.Equals(recipient) {
 		// Continue to the next IBC middleware by returning the original ACK.
 		return ack
@@ -89,7 +89,7 @@ func (k Keeper) OnRecvPacket(
 	// Check if recipient pubkey is a supported key (eth_secp256k1, amino multisig,
 	// ed25519). Continue and return success ACK as the funds are not stuck on
 	// chain for supported keys
-	if account != nil && evmos.IsSupportedKey(account.GetPubKey()) {
+	if account != nil && plateaus.IsSupportedKey(account.GetPubKey()) {
 		return ack
 	}
 
@@ -136,7 +136,7 @@ func (k Keeper) OnRecvPacket(
 			packet.DestinationPort,    // packet destination port is now the source
 			packet.DestinationChannel, // packet destination channel is now the source
 			coin,                      // balance of the coin
-			recipient,                 // recipient is the address in the Evmos chain
+			recipient,                 // recipient is the address in the Plateaus chain
 			senderBech32,              // transfer to your own account address on the source chain
 			clienttypes.ZeroHeight(),  // timeout height disabled
 			timeout,                   // timeout timestamp is 4 hours from now
@@ -223,7 +223,7 @@ func (k Keeper) OnRecvPacket(
 }
 
 // GetIBCDenomDestinationIdentifiers returns the destination port and channel of
-// the IBC denomination, i.e port and channel on Evmos for the voucher. It
+// the IBC denomination, i.e port and channel on Plateaus for the voucher. It
 // returns an error if:
 //  - the denomination is invalid
 //  - the denom trace is not found on the store

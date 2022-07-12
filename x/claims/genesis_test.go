@@ -37,7 +37,7 @@ func (suite *GenesisTestSuite) SetupTest() {
 	suite.app = app.Setup(false, feemarkettypes.DefaultGenesisState())
 	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{
 		Height:          1,
-		ChainID:         "evmos_9000-1",
+		ChainID:         "plateaus_9000-1",
 		Time:            time.Now().UTC(),
 		ProposerAddress: consAddress.Bytes(),
 
@@ -78,8 +78,8 @@ func TestGenesisTestSuite(t *testing.T) {
 
 var (
 	now  = time.Now().UTC()
-	acc1 = sdk.MustAccAddressFromBech32("evmos1qxx0fdsmruzuar2fay88lfw6sce6emamyu2s8h4d")
-	acc2 = sdk.MustAccAddressFromBech32("evmos1nsrs4t7dngkdltehkm3p6n8dp22sz3mct9uhc8")
+	acc1 = sdk.MustAccAddressFromBech32("xrz1hmvjlsellna3khhfn2n5d2mmxucr9jmyqul9s0")
+	acc2 = sdk.MustAccAddressFromBech32("xrz1777uf283z705lmeztqxpme7w7e6g4qjlwdy2ch")
 )
 
 func (suite *GenesisTestSuite) TestClaimInitGenesis() {
@@ -113,7 +113,7 @@ func (suite *GenesisTestSuite) TestClaimInitGenesis() {
 				},
 			},
 			func() {
-				coins := sdk.NewCoins(sdk.NewCoin("aevmos", sdk.NewInt(2_800)))
+				coins := sdk.NewCoins(sdk.NewCoin("axrz", sdk.NewInt(2_800)))
 				err := testutil.FundModuleAccount(suite.app.BankKeeper, suite.ctx, types.ModuleName, coins)
 				suite.Require().NoError(err)
 			},
@@ -137,7 +137,7 @@ func (suite *GenesisTestSuite) TestClaimInitGenesis() {
 				},
 			},
 			func() {
-				coins := sdk.NewCoins(sdk.NewCoin("aevmos", sdk.NewInt(400)))
+				coins := sdk.NewCoins(sdk.NewCoin("axrz", sdk.NewInt(400)))
 				err := testutil.FundModuleAccount(suite.app.BankKeeper, suite.ctx, types.ModuleName, coins)
 				suite.Require().NoError(err)
 			},
@@ -184,7 +184,7 @@ func (suite *GenesisTestSuite) TestClaimExportGenesis() {
 		},
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin("aevmos", sdk.NewInt(400)))
+	coins := sdk.NewCoins(sdk.NewCoin("axrz", sdk.NewInt(400)))
 	err := testutil.FundModuleAccount(suite.app.BankKeeper, suite.ctx, types.ModuleName, coins)
 	suite.Require().NoError(err)
 

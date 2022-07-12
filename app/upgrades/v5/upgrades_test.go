@@ -23,7 +23,7 @@ import (
 
 	"github.com/rhizomplatform/plateaus/app"
 	v5 "github.com/rhizomplatform/plateaus/app/upgrades/v5"
-	evmostypes "github.com/rhizomplatform/plateaus/types"
+	plateaustypes "github.com/rhizomplatform/plateaus/types"
 	claimskeeper "github.com/rhizomplatform/plateaus/x/claims/keeper"
 	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
 )
@@ -121,7 +121,7 @@ func (suite *UpgradeTestSuite) TestResolveAirdrop() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-			suite.SetupTest(evmostypes.TestnetChainID + "-2") // reset
+			suite.SetupTest(plateaustypes.TestnetChainID + "-2") // reset
 
 			addr := addClaimRecord(suite.ctx, suite.app.ClaimsKeeper, tc.original)
 
@@ -169,7 +169,7 @@ func (suite *UpgradeTestSuite) TestMigrateClaim() {
 	}
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-			suite.SetupTest(evmostypes.TestnetChainID + "-2") // reset
+			suite.SetupTest(plateaustypes.TestnetChainID + "-2") // reset
 
 			tc.malleate()
 
@@ -230,7 +230,7 @@ func (suite *UpgradeTestSuite) TestUpdateConsensusParams() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-			suite.SetupTest(evmostypes.TestnetChainID + "-2") // reset
+			suite.SetupTest(plateaustypes.TestnetChainID + "-2") // reset
 
 			tc.malleate()
 
@@ -262,7 +262,7 @@ func (suite *UpgradeTestSuite) TestUpdateIBCDenomTraces() {
 			"native IBC tokens",
 			ibctransfertypes.Traces{
 				{
-					BaseDenom: "aevmos",
+					BaseDenom: "axrz",
 					Path:      "",
 				},
 				{
@@ -284,7 +284,7 @@ func (suite *UpgradeTestSuite) TestUpdateIBCDenomTraces() {
 			},
 			ibctransfertypes.Traces{
 				{
-					BaseDenom: "aevmos",
+					BaseDenom: "axrz",
 					Path:      "",
 				},
 				{
@@ -309,7 +309,7 @@ func (suite *UpgradeTestSuite) TestUpdateIBCDenomTraces() {
 			"with invalid tokens",
 			ibctransfertypes.Traces{
 				{
-					BaseDenom: "aevmos",
+					BaseDenom: "axrz",
 					Path:      "",
 				},
 				{
@@ -331,7 +331,7 @@ func (suite *UpgradeTestSuite) TestUpdateIBCDenomTraces() {
 			},
 			ibctransfertypes.Traces{
 				{
-					BaseDenom: "aevmos",
+					BaseDenom: "axrz",
 					Path:      "",
 				},
 				{
@@ -356,7 +356,7 @@ func (suite *UpgradeTestSuite) TestUpdateIBCDenomTraces() {
 
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-			suite.SetupTest(evmostypes.TestnetChainID + "-2") // reset
+			suite.SetupTest(plateaustypes.TestnetChainID + "-2") // reset
 
 			for _, dt := range tc.originalTraces {
 				suite.app.TransferKeeper.SetDenomTrace(suite.ctx, dt)

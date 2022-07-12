@@ -199,27 +199,27 @@ func (suite KeeperTestSuite) TestRegisterCoin() {
 			false,
 		},
 		{
-			"evm denom registration - evmos",
+			"evm denom registration - xrz",
 			func() {
-				metadata.Base = "evmos"
+				metadata.Base = "xrz"
 				err := suite.app.BankKeeper.MintCoins(suite.ctx, inflationtypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(metadata.Base, 1)})
 				suite.Require().NoError(err)
 			},
 			false,
 		},
 		{
-			"evm denom registration - aevmos",
+			"evm denom registration - axrz",
 			func() {
-				metadata.Base = "aevmos"
+				metadata.Base = "axrz"
 				err := suite.app.BankKeeper.MintCoins(suite.ctx, inflationtypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(metadata.Base, 1)})
 				suite.Require().NoError(err)
 			},
 			false,
 		},
 		{
-			"evm denom registration - wevmos",
+			"evm denom registration - wxrz",
 			func() {
-				metadata.Base = "wevmos"
+				metadata.Base = "wxrz"
 				err := suite.app.BankKeeper.MintCoins(suite.ctx, inflationtypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(metadata.Base, 1)})
 				suite.Require().NoError(err)
 			},

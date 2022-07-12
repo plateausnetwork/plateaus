@@ -55,7 +55,7 @@ func (k Keeper) AfterProposalVote(ctx sdk.Context, proposalID uint64, voterAddr 
 }
 
 // AfterDelegationModified is called after a delegation is modified. Once a user
-// delegates their EVMOS tokens to a validator, the claimable amount for the
+// delegates their XRZ tokens to a validator, the claimable amount for the
 // user's claims record delegation action is claimed and transferred to the user
 // address.
 func (k Keeper) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
