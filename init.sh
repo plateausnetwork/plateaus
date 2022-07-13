@@ -1,5 +1,5 @@
 KEY="mykey"
-CHAINID="evmos_9000-1"
+CHAINID="plateaus_432-1"
 MONIKER="localtestnet"
 KEYRING="test"
 KEYALGO="eth_secp256k1"
