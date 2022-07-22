@@ -35,6 +35,26 @@ cat $HOME/.plateausd/config/genesis.json | jq '.app_state["inflation"]["params"]
 # Set gas limit in genesis
 cat $HOME/.plateausd/config/genesis.json | jq '.consensus_params["block"]["max_gas"]="10000000"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
 
+# Disable base fee in genesis
+cat $HOME/.plateausd/config/genesis.json | jq '.app_state.feemarket.params.no_base_fee=true' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+
+# Disable incentives
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.incentives.params.enable_incentives=false' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.incentives.params.allocation_limit="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.incentives.params.reward_scaler="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+
+# Disable incentives from inflation
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.inflation.params.enable_inflation=false' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.inflation.params.inflation_distribution.staking_rewards="1"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.inflation.params.inflation_distribution.usage_incentives="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.inflation.params.inflation_distribution.community_pool="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+
+# Disable distributions
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.distribution.params.withdraw_addr_enabled=false' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.distribution.params.community_tax="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.distribution.params.base_proposer_reward="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+#cat $HOME/.plateausd/config/genesis.json | jq '.app_state.distribution.params.bonus_proposer_reward="0"' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
+
 # Set claims start time
 node_address=$(plateausd keys list | grep  "address: " | cut -c12-)
 current_date=$(date -u +"%Y-%m-%dT%TZ")
@@ -84,17 +104,17 @@ if [[ $1 == "pending" ]]; then
 fi
 
 # Allocate genesis accounts (cosmos formatted addresses)
-plateausd add-genesis-account $KEY 100000000000000000000000000axrz --keyring-backend $KEYRING
+plateausd add-genesis-account $KEY 3333333333330000000000000axrz --keyring-backend $KEYRING
 
 # Update total supply with claim values
 validators_supply=$(cat $HOME/.plateausd/config/genesis.json | jq -r '.app_state["bank"]["supply"][0]["amount"]')
 # Bc is required to add this big numbers
 #total_supply=$(bc <<< "$amount_to_claim+$validators_supply")
-total_supply=100000000000000000000000000
+total_supply=3333333333330000000000000
 cat $HOME/.plateausd/config/genesis.json | jq -r --arg total_supply "$total_supply" '.app_state["bank"]["supply"][0]["amount"]=$total_supply' > $HOME/.plateausd/config/tmp_genesis.json && mv $HOME/.plateausd/config/tmp_genesis.json $HOME/.plateausd/config/genesis.json
 
 # Sign genesis transaction
-plateausd gentx $KEY 1000000000000000000000axrz --keyring-backend $KEYRING --chain-id $CHAINID
+plateausd gentx $KEY 1000000000000000000000axrz --keyring-backend $KEYRING --chain-id $CHAINID --gas=0xrz
 
 # Collect genesis tx
 plateausd collect-gentxs
@@ -107,4 +127,4 @@ if [[ $1 == "pending" ]]; then
 fi
 
 # Start the node (remove the --pruning=nothing flag if historical queries are not needed)
-plateausd start --pruning=nothing $TRACE --log_level $LOGLEVEL --minimum-gas-prices=0.0001axrz --json-rpc.api eth,txpool,personal,net,debug,web3
+plateausd start --pruning=nothing $TRACE --log_level $LOGLEVEL --json-rpc.api eth,txpool,personal,net,debug,web3

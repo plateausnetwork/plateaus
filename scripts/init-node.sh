@@ -11,7 +11,7 @@ LOCALTESTNET="`pwd`/localnet-setup/"
 TRACE=""
 
 #PEERS="c3947db1b922f3be28e038a486308b0c52f41dc0@127.0.0.1:26656"
-PEERS=""
+PEERS=`curl http://localhost:26657/genesis | jq '.result.genesis.app_state.genutil.gen_txs[0].body.memo'`
 GENESISJSON=`curl http://localhost:26657/genesis | jq '.result.genesis'`
 
 if [ ! $PEERS ]; then
@@ -52,7 +52,7 @@ sleep 1
 # setting peers from config.toml
 #peers="2eaff30af3ef7c05b27a966826aadc8ccb86db18@127.0.0.1:26656"
 #peers="d50c54142ca612af9146f3c9f6c6702fbde05d97@127.0.0.1:26656"
-sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $LOCALTESTNET/config/config.toml
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = $PEERS/" $LOCALTESTNET/config/config.toml
 
 ## Run this to ensure everything worked and that the genesis file is setup correctly
 plateausd validate-genesis --home=$LOCALTESTNET
