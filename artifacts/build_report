@@ -1,0 +1,9 @@
+App: plateausd
+Version: 0.0.1
+Commit: f42c90c2580d00409be1e7668313380d824b34f7
+Files:
+ 2d09219a388f3e7ea929cb63c86020f6  plateausd-0.0.1-linux-amd64
+ 9ca66edb11b47f801550a536397d670c  plateausd-0.0.1.tar.gz
+Checksums-Sha256:
+ 618b9661cf864a6471f6598b919e815b21cebf9c32f8086a4e0774700d929955  plateausd-0.0.1-linux-amd64
+ e4b90c032f30d67a53a56ced06b4ef3df1191b34c6cf46052b483e6a4dfb652c  plateausd-0.0.1.tar.gz
