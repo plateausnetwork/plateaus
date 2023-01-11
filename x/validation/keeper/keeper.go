@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-	types2 "github.com/rhizomplatform/plateaus/types"
 	"github.com/rhizomplatform/plateaus/x/validation/types"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -48,9 +46,6 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 		With("validator", valAddr.Bytes()).
 		Info("Starting check validator permission")
 
-	val, _ := types2.GetPlateausAddressFromBech32(valAddr.String())
-
-	fmt.Println(val)
 	if k.isInitialized(ctx, valAddr) {
 		return
 	}
