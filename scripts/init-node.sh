@@ -58,6 +58,6 @@ sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = $PEERS/" $LOCALTESTNE
 plateausd validate-genesis --home=$LOCALTESTNET
 
 ## Start the node (remove the --pruning=nothing flag if historical queries are not needed)
-plateausd start --pruning=nothing $TRACE --log_level $LOGLEVEL --home=$LOCALTESTNET
+plateausd start --pruning=default $TRACE --log_level $LOGLEVEL --home=$LOCALTESTNET
 
-echo "plateausd start --pruning=nothing $TRACE --log_level $LOGLEVEL --home=$LOCALTESTNET"
+echo "plateausd start --pruning=default $TRACE --log_level $LOGLEVEL --home=$LOCALTESTNET"

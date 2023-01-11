@@ -1,7 +1,7 @@
 KEY="mykey"
 CHAINID="plateaus_432-1"
 MONIKER="localtestnet"
-KEYRING="test"
+KEYRING="os"
 KEYALGO="eth_secp256k1"
 LOGLEVEL="info"
 # to trace evm

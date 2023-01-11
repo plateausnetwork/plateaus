@@ -49,7 +49,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	distrcosmos "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -115,6 +115,7 @@ import (
 	"github.com/rhizomplatform/plateaus/x/claims"
 	claimskeeper "github.com/rhizomplatform/plateaus/x/claims/keeper"
 	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
+	"github.com/rhizomplatform/plateaus/x/distribution"
 	"github.com/rhizomplatform/plateaus/x/epochs"
 	epochskeeper "github.com/rhizomplatform/plateaus/x/epochs/keeper"
 	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
@@ -132,6 +133,9 @@ import (
 	"github.com/rhizomplatform/plateaus/x/recovery"
 	recoverykeeper "github.com/rhizomplatform/plateaus/x/recovery/keeper"
 	recoverytypes "github.com/rhizomplatform/plateaus/x/recovery/types"
+	"github.com/rhizomplatform/plateaus/x/validation"
+	validationkeeper "github.com/rhizomplatform/plateaus/x/validation/keeper"
+	validationtypes "github.com/rhizomplatform/plateaus/x/validation/types"
 	"github.com/rhizomplatform/plateaus/x/vesting"
 	vestingkeeper "github.com/rhizomplatform/plateaus/x/vesting/keeper"
 	vestingtypes "github.com/rhizomplatform/plateaus/x/vesting/types"
@@ -168,7 +172,7 @@ var (
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
-		distr.AppModuleBasic{},
+		distribution.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			paramsclient.ProposalHandler, distrclient.ProposalHandler, upgradeclient.ProposalHandler, upgradeclient.CancelProposalHandler,
 			ibcclientclient.UpdateClientProposalHandler, ibcclientclient.UpgradeProposalHandler,
@@ -248,6 +252,7 @@ type Plateaus struct {
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
+	ValidationKeeper validationkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
@@ -328,9 +333,10 @@ func NewPlateaus(
 		ibchost.StoreKey, ibctransfertypes.StoreKey,
 		// ethermint keys
 		evmtypes.StoreKey, feemarkettypes.StoreKey,
-		// evmos keys
+		// plateaus keys
 		inflationtypes.StoreKey, erc20types.StoreKey, incentivestypes.StoreKey,
 		epochstypes.StoreKey, claimstypes.StoreKey, vestingtypes.StoreKey,
+		validationtypes.StoreKey,
 	)
 
 	// Add the EVM transient store key
@@ -410,7 +416,7 @@ func NewPlateaus(
 	govRouter := govtypes.NewRouter()
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(distrtypes.RouterKey, distrcosmos.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(erc20types.RouterKey, erc20.NewErc20ProposalHandler(&app.Erc20Keeper)).
@@ -431,6 +437,10 @@ func NewPlateaus(
 	app.ClaimsKeeper = claimskeeper.NewKeeper(
 		appCodec, keys[claimstypes.StoreKey], app.GetSubspace(claimstypes.ModuleName),
 		app.AccountKeeper, app.BankKeeper, &stakingKeeper, app.DistrKeeper,
+	)
+
+	app.ValidationKeeper = validationkeeper.NewKeeper(appCodec, keys[validationtypes.StoreKey],
+		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, app.ModuleAccountAddrs(),
 	)
 
 	// register the staking hooks
@@ -557,7 +567,8 @@ func NewPlateaus(
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
+		validation.NewAppModule(appCodec, app.ValidationKeeper),
+		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.ValidationKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -585,6 +596,7 @@ func NewPlateaus(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	// NOTE: upgrade module must go first to handle software upgrades.
+	// NOTE: validation must go before than distribution
 	// NOTE: staking module is required if HistoricalEntries param > 0.
 	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 	app.mm.SetOrderBeginBlockers(
@@ -594,6 +606,7 @@ func NewPlateaus(
 		epochstypes.ModuleName,
 		feemarkettypes.ModuleName,
 		evmtypes.ModuleName,
+		validationtypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -633,6 +646,7 @@ func NewPlateaus(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		validationtypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		genutiltypes.ModuleName,
@@ -659,6 +673,7 @@ func NewPlateaus(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		validationtypes.ModuleName,
 		distrtypes.ModuleName,
 		// NOTE: staking requires the claiming hook
 		claimstypes.ModuleName,
@@ -709,7 +724,8 @@ func NewPlateaus(
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		// mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
+		validation.NewAppModule(appCodec, app.ValidationKeeper),
+		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.ValidationKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
