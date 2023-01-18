@@ -1,13 +1,16 @@
 package keeper
 
 import (
-	"github.com/rhizomplatform/plateaus/x/validation/types"
-	"github.com/tendermint/tendermint/libs/log"
-
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	plateaustypes "github.com/rhizomplatform/plateaus/types"
+	"github.com/rhizomplatform/plateaus/x/validation/types"
+	"github.com/tendermint/tendermint/libs/log"
+	"net/http"
+	"time"
 )
 
 // Keeper of the distribution store
@@ -44,14 +47,35 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 	k.Logger(ctx).
 		With("hash", ctx.HeaderHash().String()).
 		With("validator", valAddr.Bytes()).
-		Info("Starting check validator permission")
+		Info("starting check validator permission")
 
 	if k.isInitialized(ctx, valAddr) {
 		return
 	}
 
+	valAccAddr, _ := plateaustypes.GetPlateausAddressFromBech32(valAddr.String())
+
 	//TODO: get permission external request
-	value := true
+	//TODO: techinical debt: we need to execute this validation onchain
+	c := &http.Client{
+		Timeout: time.Millisecond * 5000,
+	}
+	r, err := c.Get(fmt.Sprintf("https://vyd0yyst26.execute-api.us-east-1.amazonaws.com/development/nodes/%s", valAccAddr))
+
+	if err != nil {
+		k.Logger(ctx).
+			With("hash", ctx.HeaderHash().String()).
+			With("validator", valAddr.Bytes()).
+			Error("could not check validator permission")
+		return
+	}
+
+	defer r.Body.Close()
+
+	value := r.StatusCode == http.StatusNoContent
+
+	k.Logger(ctx).Info(fmt.Sprintf("validator was checked: %t", value))
+
 	k.SetValidator(ctx, valAddr, value)
 
 	return
@@ -59,6 +83,17 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 
 func (k Keeper) isInitialized(ctx sdk.Context, valAddr sdk.ValAddress) bool {
 	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.ValidatorValidationRewardsPrefix)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		key := iterator.Key()
+		value := iterator.Value()
+
+		k.Logger(ctx).With("validator", key).With("permission", value).Info(fmt.Sprintf("validators was initialized"))
+	}
+
 	return store.Has(types.GetValidatorValidationRewardsKey(valAddr))
 }
 
