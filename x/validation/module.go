@@ -2,17 +2,6 @@ package validation
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/rhizomplatform/plateaus/x/validation/keeper"
-	"github.com/rhizomplatform/plateaus/x/validation/types"
-	"math/rand"
-
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	sdkclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -20,6 +9,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/distribution/client/cli"
+	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/rhizomplatform/plateaus/x/validation/keeper"
+	"github.com/rhizomplatform/plateaus/x/validation/types"
+	"github.com/spf13/cobra"
+	abci "github.com/tendermint/tendermint/abci/types"
+	"math/rand"
+	"time"
 )
 
 var (
@@ -28,46 +25,46 @@ var (
 	_ module.AppModuleSimulation = AppModule{}
 )
 
-// AppModuleBasic defines the basic application module used by the distribution module.
+// AppModuleBasic defines the basic application module used by the validation module.
 type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
-// Name returns the distribution module's name.
+// Name returns the validation module's name.
 func (AppModuleBasic) Name() string {
 	return types.ModuleName
 }
 
-// RegisterLegacyAminoCodec registers the distribution module's types for the given codec.
+// RegisterLegacyAminoCodec registers the validation module's types for the given codec.
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
-// DefaultGenesis returns default genesis state as raw bytes for the distribution
+// DefaultGenesis returns default genesis state as raw bytes for the validation
 // module.
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return []byte("{}")
 }
 
-// ValidateGenesis performs genesis state validation for the distribution module.
+// ValidateGenesis performs genesis state validation for the validation module.
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config sdkclient.TxEncodingConfig, bz json.RawMessage) error {
 	return nil
 }
 
-// RegisterRESTRoutes registers the REST routes for the distribution module.
+// RegisterRESTRoutes registers the REST routes for the validation module.
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx sdkclient.Context, rtr *mux.Router) {
 	//rest.RegisterHandlers(clientCtx, rtr)
 }
 
-// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the distribution module.
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the validation module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx sdkclient.Context, mux *runtime.ServeMux) {
 	//types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
 
-// GetTxCmd returns the root tx command for the distribution module.
+// GetTxCmd returns the root tx command for the validation module.
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.NewTxCmd()
 }
 
-// GetQueryCmd returns the root query command for the distribution module.
+// GetQueryCmd returns the root query command for the validation module.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
@@ -75,7 +72,7 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 // RegisterInterfaces implements InterfaceModule
 func (b AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) {}
 
-// AppModule implements an application module for the distribution module.
+// AppModule implements an application module for the validation module.
 type AppModule struct {
 	AppModuleBasic
 
@@ -90,12 +87,12 @@ func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	}
 }
 
-// Name returns the distribution module's name.
+// Name returns the validation module's name.
 func (AppModule) Name() string {
 	return types.ModuleName
 }
 
-// RegisterInvariants registers the distribution module invariants.
+// RegisterInvariants registers the validation module invariants.
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
 // NewHandler returns nil validation module doesn't expose any gRPC endpoints
@@ -103,17 +100,17 @@ func (am AppModule) NewHandler() sdk.Handler {
 	return nil
 }
 
-// Route returns the message routing key for the distribution module.
+// Route returns the message routing key for the validation module.
 func (am AppModule) Route() sdk.Route {
 	return sdk.NewRoute(types.RouterKey, am.NewHandler())
 }
 
-// QuerierRoute returns the distribution module's querier route name.
+// QuerierRoute returns the validation module's querier route name.
 func (AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the distribution module sdk.Querier.
+// LegacyQuerierHandler returns the validation module sdk.Querier.
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return nil
 }
@@ -125,25 +122,27 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 // InitGenesis performs genesis initialization for the validation module. It returns
 // no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
-	fmt.Println("Starting x/validation")
 	return []abci.ValidatorUpdate{}
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the distribution
+// ExportGenesis returns the exported genesis state as raw bytes for the validation
 // module.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	return []byte(types.ModuleName)
+	return am.DefaultGenesis(cdc)
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return 2 }
 
-// BeginBlock returns the begin blocker for the distribution module.
+// BeginBlock returns the begin blocker for the validation module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
-	BeginBlocker(ctx, req, am.keeper)
+	// check if is time to update the store
+	if time.Now().Minute()%30 == 0 {
+		BeginBlocker(ctx, req, am.keeper)
+	}
 }
 
-// EndBlock returns the end blocker for the distribution module. It returns no validator
+// EndBlock returns the end blocker for the validation module. It returns no validator
 // updates.
 func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
@@ -151,21 +150,21 @@ func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Validato
 
 // AppModuleSimulation functions
 
-// GenerateGenesisState creates a randomized GenState of the distribution module.
+// GenerateGenesisState creates a randomized GenState of the validation module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {}
 
-// ProposalContents returns all the distribution content functions used to
+// ProposalContents returns all the validation content functions used to
 // simulate governance proposals.
 func (am AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
 	return []simtypes.WeightedProposalContent{}
 }
 
-// RandomizedParams creates randomized distribution param changes for the simulator.
+// RandomizedParams creates randomized validation param changes for the simulator.
 func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
 	return []simtypes.ParamChange{}
 }
 
-// RegisterStoreDecoder registers a decoder for distribution module's types
+// RegisterStoreDecoder registers a decoder for validation module's types
 func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.

@@ -2,15 +2,17 @@ package keeper
 
 import (
 	"fmt"
+	sdkclient "github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/config"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	plateaustypes "github.com/rhizomplatform/plateaus/types"
+	"github.com/rhizomplatform/plateaus/x/validation/service"
 	"github.com/rhizomplatform/plateaus/x/validation/types"
 	"github.com/tendermint/tendermint/libs/log"
-	"net/http"
-	"time"
 )
 
 // Keeper of the distribution store
@@ -46,55 +48,72 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 	k.Logger(ctx).
 		With("hash", ctx.HeaderHash().String()).
-		With("validator", valAddr.Bytes()).
+		With("validator", valAddr.String()).
 		Info("starting check validator permission")
 
-	if k.isInitialized(ctx, valAddr) {
-		return
-	}
-
-	valAccAddr, _ := plateaustypes.GetPlateausAddressFromBech32(valAddr.String())
-
-	//TODO: get permission external request
-	//TODO: techinical debt: we need to execute this validation onchain
-	c := &http.Client{
-		Timeout: time.Millisecond * 5000,
-	}
-	r, err := c.Get(fmt.Sprintf("https://vyd0yyst26.execute-api.us-east-1.amazonaws.com/development/nodes/%s", valAccAddr))
+	validations, err := service.GetValidations(valAddr)
 
 	if err != nil {
 		k.Logger(ctx).
 			With("hash", ctx.HeaderHash().String()).
-			With("validator", valAddr.Bytes()).
-			Error("could not check validator permission")
+			With("validator", valAddr.String()).
+			Error("could not get validations", err)
+
 		return
 	}
 
-	defer r.Body.Close()
+	for receivedAddr, isAble := range validations {
+		accAddr, err := sdk.AccAddressFromBech32(receivedAddr)
 
-	value := r.StatusCode == http.StatusNoContent
+		if err != nil {
+			k.Logger(ctx).With("received-addr", receivedAddr).Error("received acc address was not able to create an AccAddress")
+			continue
+		}
 
-	k.Logger(ctx).Info(fmt.Sprintf("validator was checked: %t", value))
+		k.Logger(ctx).With("received-addr", receivedAddr).Error("setting validator validation")
 
-	k.SetValidator(ctx, valAddr, value)
+		val := sdk.ValAddress(accAddr.Bytes())
+		k.SetValidator(ctx, val, isAble)
+	}
+
+	k.Logger(ctx).Info("validator was checked")
 
 	return
 }
 
-func (k Keeper) isInitialized(ctx sdk.Context, valAddr sdk.ValAddress) bool {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.ValidatorValidationRewardsPrefix)
+func (k Keeper) createTx(ctx sdk.Context, cdc codec.ProtoCodecMarshaler, msg sdk.Msg) {
+	txCfg := tx.NewTxConfig(cdc, tx.DefaultSignModes)
 
-	defer iterator.Close()
+	txBuilder := txCfg.NewTxBuilder()
 
-	for ; iterator.Valid(); iterator.Next() {
-		key := iterator.Key()
-		value := iterator.Value()
-
-		k.Logger(ctx).With("validator", key).With("permission", value).Info(fmt.Sprintf("validators was initialized"))
+	if err := txBuilder.SetMsgs(msg); err != nil {
+		panic(err)
 	}
 
-	return store.Has(types.GetValidatorValidationRewardsKey(valAddr))
+	bz, err := txCfg.TxEncoder()(txBuilder.GetTx())
+
+	if err != nil {
+		panic(err)
+	}
+
+	ctxClient := sdkclient.Context{}.
+		WithChainID(ctx.ChainID()).
+		WithCodec(cdc).
+		WithBroadcastMode(flags.BroadcastSync).
+		WithViper("PLATEAUS")
+
+	ctxClient, _ = config.ReadFromClientConfig(ctxClient)
+
+	// Broadcast the transaction
+	res, err := ctxClient.BroadcastTx(bz)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(res.Code)
+	fmt.Println(res)
+
 }
 
 func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool) {
