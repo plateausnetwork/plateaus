@@ -25,20 +25,20 @@ type Keeper struct {
 
 	blockedAddrs map[string]bool
 	ModuleOpts   map[string]interface{}
-	memStore     sdk.KVStore
+	cacheStore   sdk.KVStore
 }
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(
 	cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
-	ak distrtypes.AccountKeeper, memStore sdk.KVStore, blockedAddrs map[string]bool, moduleOpts map[string]interface{},
+	ak distrtypes.AccountKeeper, cacheStore sdk.KVStore, blockedAddrs map[string]bool, moduleOpts map[string]interface{},
 ) Keeper {
 	return Keeper{
 		storeKey:     key,
 		cdc:          cdc,
 		paramSpace:   paramSpace,
 		authKeeper:   ak,
-		memStore:     memStore,
+		cacheStore:   cacheStore,
 		blockedAddrs: blockedAddrs,
 		ModuleOpts:   moduleOpts,
 	}
@@ -129,11 +129,11 @@ func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool
 		bValue = []byte("true")
 	}
 
-	k.memStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
+	k.cacheStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
 }
 
 func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
-	value := k.memStore.Get(types.GetValidatorValidationRewardsKey(valAddr))
+	value := k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr))
 
 	if value == nil {
 		return false
