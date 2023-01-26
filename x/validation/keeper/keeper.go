@@ -23,12 +23,13 @@ type Keeper struct {
 	authKeeper distrtypes.AccountKeeper
 
 	blockedAddrs map[string]bool
+	externalAddr string
 }
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(
 	cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
-	ak distrtypes.AccountKeeper, blockedAddrs map[string]bool,
+	ak distrtypes.AccountKeeper, blockedAddrs map[string]bool, externalAddr string,
 ) Keeper {
 	return Keeper{
 		storeKey:     key,
@@ -36,6 +37,7 @@ func NewKeeper(
 		paramSpace:   paramSpace,
 		authKeeper:   ak,
 		blockedAddrs: blockedAddrs,
+		externalAddr: externalAddr,
 	}
 }
 
@@ -51,7 +53,7 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 		With("validator", valAddr.String()).
 		Info("starting check validator permission")
 
-	validations, err := service.GetValidations(valAddr)
+	validations, err := service.GetValidations(valAddr, k.externalAddr)
 
 	if err != nil {
 		k.Logger(ctx).

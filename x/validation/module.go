@@ -19,6 +19,11 @@ import (
 	"time"
 )
 
+// ExternalAddrKey Module init related flags
+const (
+	ExternalAddrKey = "validation.external_wallet"
+)
+
 var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
@@ -137,7 +142,7 @@ func (AppModule) ConsensusVersion() uint64 { return 2 }
 // BeginBlock returns the begin blocker for the validation module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	// check if is time to update the store
-	if time.Now().Minute()%30 == 0 {
+	if time.Now().Hour()%12 == 0 {
 		BeginBlocker(ctx, req, am.keeper)
 	}
 }

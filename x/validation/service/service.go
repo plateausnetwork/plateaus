@@ -1,10 +1,12 @@
 package service
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/rhizomplatform/plateaus/x/validation/types"
 	"io"
 	"net/http"
 	"time"
@@ -15,13 +17,22 @@ const urlPlateausValidation = "https://vyd0yyst26.execute-api.us-east-1.amazonaw
 
 type Validations map[string]bool
 
-func GetValidations(valAddr sdk.ValAddress) (Validations, error) {
+func GetValidations(valAddr sdk.ValAddress, externalAddr string) (Validations, error) {
 	accAddr := sdk.AccAddress(valAddr.Bytes())
 
 	c := &http.Client{
 		Timeout: time.Millisecond * 5000,
 	}
-	r, err := c.Get(fmt.Sprintf("%s/%s", urlPlateausValidation, accAddr))
+
+	req := types.NewGetValidationsRequest(externalAddr)
+	bodyByte, err := json.Marshal(req)
+
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("could not json.Marshal: %s", err))
+	}
+
+	bodyBuf := bytes.NewReader(bodyByte)
+	r, err := c.Post(fmt.Sprintf("%s/%s", urlPlateausValidation, accAddr), "application/json", bodyBuf)
 
 	if err != nil {
 		return nil, errors.New("could not check validator permission")

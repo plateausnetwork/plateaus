@@ -441,7 +441,7 @@ func NewPlateaus(
 	)
 
 	app.ValidationKeeper = validationkeeper.NewKeeper(appCodec, keys[validationtypes.StoreKey],
-		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, app.ModuleAccountAddrs(),
+		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, app.ModuleAccountAddrs(), cast.ToString(appOpts.Get(validation.ExternalAddrKey)),
 	)
 
 	// register the staking hooks
