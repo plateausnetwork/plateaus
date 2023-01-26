@@ -125,12 +125,12 @@ func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool
 		bValue = []byte("true")
 	}
 
-	store := ctx.KVStore(k.storeKey)
+	store := ctx.TransientStore(k.storeKey)
 	store.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
 }
 
 func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := ctx.TransientStore(k.storeKey)
 	value := store.Get(types.GetValidatorValidationRewardsKey(valAddr))
 
 	if value == nil {

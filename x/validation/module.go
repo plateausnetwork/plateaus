@@ -25,9 +25,10 @@ const (
 )
 
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
-	_ module.AppModuleSimulation = AppModule{}
+	_                  module.AppModule           = AppModule{}
+	_                  module.AppModuleBasic      = AppModuleBasic{}
+	_                  module.AppModuleSimulation = AppModule{}
+	lastBeginBlockExec int
 )
 
 // AppModuleBasic defines the basic application module used by the validation module.
@@ -142,7 +143,9 @@ func (AppModule) ConsensusVersion() uint64 { return 2 }
 // BeginBlock returns the begin blocker for the validation module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	// check if is time to update the store
-	if time.Now().Minute()%5 == 0 {
+	currentTime := time.Now().Minute()
+	if currentTime%2 == 0 && lastBeginBlockExec != currentTime {
+		lastBeginBlockExec = currentTime
 		BeginBlocker(ctx, req, am.keeper)
 	}
 }
