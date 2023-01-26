@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/store/mem"
 	"io"
 	"net/http"
 	"os"
@@ -441,7 +442,7 @@ func NewPlateaus(
 	)
 
 	app.ValidationKeeper = validationkeeper.NewKeeper(appCodec, keys[validationtypes.StoreKey],
-		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, app.ModuleAccountAddrs(), cast.ToString(appOpts.Get(validation.ExternalAddrKey)),
+		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, mem.NewStore(), app.ModuleAccountAddrs(), cast.ToStringMap(appOpts.Get(validationtypes.ModuleName)),
 	)
 
 	// register the staking hooks

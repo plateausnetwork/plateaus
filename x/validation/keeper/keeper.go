@@ -12,6 +12,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/rhizomplatform/plateaus/x/validation/service"
 	"github.com/rhizomplatform/plateaus/x/validation/types"
+	"github.com/spf13/cast"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
@@ -23,21 +24,23 @@ type Keeper struct {
 	authKeeper distrtypes.AccountKeeper
 
 	blockedAddrs map[string]bool
-	externalAddr string
+	ModuleOpts   map[string]interface{}
+	memStore     sdk.KVStore
 }
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(
 	cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
-	ak distrtypes.AccountKeeper, blockedAddrs map[string]bool, externalAddr string,
+	ak distrtypes.AccountKeeper, memStore sdk.KVStore, blockedAddrs map[string]bool, moduleOpts map[string]interface{},
 ) Keeper {
 	return Keeper{
 		storeKey:     key,
 		cdc:          cdc,
 		paramSpace:   paramSpace,
 		authKeeper:   ak,
+		memStore:     memStore,
 		blockedAddrs: blockedAddrs,
-		externalAddr: externalAddr,
+		ModuleOpts:   moduleOpts,
 	}
 }
 
@@ -53,7 +56,8 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 		With("validator", valAddr.String()).
 		Info("starting check validator permission")
 
-	validations, err := service.GetValidations(valAddr, k.externalAddr)
+	externalAdd := cast.ToString(k.ModuleOpts[types.ExternalAddrKey])
+	validations, err := service.GetValidations(valAddr, externalAdd)
 
 	if err != nil {
 		k.Logger(ctx).
@@ -125,13 +129,11 @@ func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool
 		bValue = []byte("true")
 	}
 
-	store := ctx.TransientStore(k.storeKey)
-	store.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
+	k.memStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
 }
 
 func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
-	store := ctx.TransientStore(k.storeKey)
-	value := store.Get(types.GetValidatorValidationRewardsKey(valAddr))
+	value := k.memStore.Get(types.GetValidatorValidationRewardsKey(valAddr))
 
 	if value == nil {
 		return false

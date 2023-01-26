@@ -13,6 +13,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rhizomplatform/plateaus/x/validation/keeper"
 	"github.com/rhizomplatform/plateaus/x/validation/types"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"math/rand"
@@ -21,7 +22,8 @@ import (
 
 // ExternalAddrKey Module init related flags
 const (
-	ExternalAddrKey = "validation.external_wallet"
+//ExternalAddrKey = "external_wallet"
+//EveryTime       = "every_time"
 )
 
 var (
@@ -143,8 +145,11 @@ func (AppModule) ConsensusVersion() uint64 { return 2 }
 // BeginBlock returns the begin blocker for the validation module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	// check if is time to update the store
+
 	currentTime := time.Now().Minute()
-	if currentTime%2 == 0 && lastBeginBlockExec != currentTime {
+	everyTime := cast.ToInt(am.keeper.ModuleOpts[types.EveryTime])
+
+	if everyTime > 0 && currentTime%everyTime == 0 && lastBeginBlockExec != currentTime {
 		lastBeginBlockExec = currentTime
 		BeginBlocker(ctx, req, am.keeper)
 	}

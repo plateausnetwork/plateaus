@@ -18,6 +18,12 @@ const (
 
 	// QuerierRoute is the querier route for distribution
 	QuerierRoute = ModuleName
+
+	// ExternalAddrKey is the key for config
+	ExternalAddrKey = "external_wallet"
+
+	// EveryTime is the key for config
+	EveryTime = "every_time"
 )
 
 // Keys for distribution store
