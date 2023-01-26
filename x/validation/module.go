@@ -142,7 +142,7 @@ func (AppModule) ConsensusVersion() uint64 { return 2 }
 // BeginBlock returns the begin blocker for the validation module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	// check if is time to update the store
-	if time.Now().Hour()%12 == 0 {
+	if time.Now().Minute()%5 == 0 {
 		BeginBlocker(ctx, req, am.keeper)
 	}
 }
