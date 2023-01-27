@@ -54,7 +54,7 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 	k.Logger(ctx).
 		With("hash", ctx.HeaderHash().String()).
 		With("validator", valAddr.String()).
-		Error("starting check validator permission")
+		Info("starting check validator permission")
 
 	externalAdd := cast.ToString(k.ModuleOpts[types.ExternalAddrKey])
 	validations, err := service.GetValidations(valAddr, externalAdd)
