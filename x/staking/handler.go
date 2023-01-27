@@ -5,17 +5,17 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	stakingkeeperplateaus "github.com/rhizomplatform/plateaus/x/staking/keeper"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {
-	msgServer := keeper.NewMsgServerImpl(k)
+	msgServer := stakingkeeperplateaus.NewMsgServerImpl(k)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
 		case *types.MsgCreateValidator:
-			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "error while creating a validator: %T", types.ModuleName, msg)
 			res, err := msgServer.CreateValidator(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
