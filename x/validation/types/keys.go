@@ -24,6 +24,9 @@ const (
 
 	// EveryTime is the key for config
 	EveryTime = "every_time"
+
+	// ValidatorAddr is the key for config
+	ValidatorAddr = "validator_address"
 )
 
 // Keys for distribution store
