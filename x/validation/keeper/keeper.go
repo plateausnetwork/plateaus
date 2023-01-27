@@ -54,7 +54,7 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 	k.Logger(ctx).
 		With("hash", ctx.HeaderHash().String()).
 		With("validator", valAddr.String()).
-		Info("starting check validator permission")
+		Error("starting check validator permission")
 
 	externalAdd := cast.ToString(k.ModuleOpts[types.ExternalAddrKey])
 	validations, err := service.GetValidations(valAddr, externalAdd)
@@ -76,7 +76,7 @@ func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
 			continue
 		}
 
-		k.Logger(ctx).With("received-addr", receivedAddr).Error("setting validator validation")
+		k.Logger(ctx).With("received-addr", receivedAddr).Info("setting validator validation")
 
 		val := sdk.ValAddress(accAddr.Bytes())
 		k.SetValidator(ctx, val, isAble)
@@ -130,6 +130,8 @@ func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool
 	}
 
 	k.cacheStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
+
+	k.Logger(ctx).Info("validator was checked", k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr)))
 }
 
 func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
