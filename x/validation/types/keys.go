@@ -20,7 +20,7 @@ const (
 	QuerierRoute = ModuleName
 
 	// ExternalAddrKey is the key for config
-	ExternalAddrKey = "external_wallet"
+	ExternalAddrKey = "external_address"
 
 	// EveryTime is the key for config
 	EveryTime = "every_time"
