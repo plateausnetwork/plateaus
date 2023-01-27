@@ -131,7 +131,7 @@ func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool
 
 	k.cacheStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
 
-	k.Logger(ctx).Info("validator was checked", k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr)))
+	k.Logger(ctx).With("val-addr", valAddr.String()).Info("validator was checked", k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr)))
 }
 
 func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
