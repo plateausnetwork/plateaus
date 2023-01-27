@@ -135,6 +135,7 @@ import (
 	"github.com/rhizomplatform/plateaus/x/recovery"
 	recoverykeeper "github.com/rhizomplatform/plateaus/x/recovery/keeper"
 	recoverytypes "github.com/rhizomplatform/plateaus/x/recovery/types"
+	stakingplateaus "github.com/rhizomplatform/plateaus/x/staking"
 	"github.com/rhizomplatform/plateaus/x/validation"
 	validationkeeper "github.com/rhizomplatform/plateaus/x/validation/keeper"
 	validationtypes "github.com/rhizomplatform/plateaus/x/validation/types"
@@ -572,7 +573,7 @@ func NewPlateaus(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		validation.NewAppModule(appCodec, app.ValidationKeeper),
 		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.ValidationKeeper),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		stakingplateaus.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
