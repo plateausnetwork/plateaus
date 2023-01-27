@@ -25,20 +25,18 @@ type Keeper struct {
 
 	blockedAddrs map[string]bool
 	ModuleOpts   map[string]interface{}
-	cacheStore   sdk.KVStore
 }
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(
 	cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
-	ak distrtypes.AccountKeeper, cacheStore sdk.KVStore, blockedAddrs map[string]bool, moduleOpts map[string]interface{},
+	ak distrtypes.AccountKeeper, blockedAddrs map[string]bool, moduleOpts map[string]interface{},
 ) Keeper {
 	return Keeper{
 		storeKey:     key,
 		cdc:          cdc,
 		paramSpace:   paramSpace,
 		authKeeper:   ak,
-		cacheStore:   cacheStore,
 		blockedAddrs: blockedAddrs,
 		ModuleOpts:   moduleOpts,
 	}
@@ -123,19 +121,21 @@ func (k Keeper) createTx(ctx sdk.Context, cdc codec.ProtoCodecMarshaler, msg sdk
 }
 
 func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool) {
+	store := ctx.TransientStore(k.storeKey)
 	bValue := []byte("false")
 
 	if value {
 		bValue = []byte("true")
 	}
 
-	k.cacheStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
+	store.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
 
-	k.Logger(ctx).With("val-addr", valAddr.String()).Info("validator was checked", k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr)))
+	k.Logger(ctx).With("val-addr", valAddr.String()).Info("validator was checked", store.Get(types.GetValidatorValidationRewardsKey(valAddr)))
 }
 
 func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
-	value := k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr))
+	store := ctx.TransientStore(k.storeKey)
+	value := store.Get(types.GetValidatorValidationRewardsKey(valAddr))
 
 	if value == nil {
 		return false
