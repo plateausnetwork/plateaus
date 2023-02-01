@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/staking"
+	cliplateaus "github.com/rhizomplatform/plateaus/x/staking/client/cli"
 	"math/rand"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -66,7 +68,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
 	}
 
-	return ValidateGenesis(&data)
+	return staking.ValidateGenesis(&data)
 }
 
 // RegisterRESTRoutes registers the REST routes for the staking module.
@@ -81,7 +83,19 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 
 // GetTxCmd returns the root tx command for the staking module.
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd()
+	txStakingCmd := cli.NewTxCmd()
+
+	for _, cmd := range txStakingCmd.Commands() {
+		if cmd.Use != "create-validator" {
+			continue
+		}
+
+		txStakingCmd.RemoveCommand(cmd)
+	}
+
+	txStakingCmd.AddCommand(cliplateaus.NewCreateValidatorCmd())
+
+	return txStakingCmd
 }
 
 // GetQueryCmd returns no root query command for the staking module.
@@ -120,7 +134,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
+	return sdk.NewRoute(types.RouterKey, staking.NewHandler(am.keeper))
 }
 
 // QuerierRoute returns the staking module's querier route name.
@@ -150,13 +164,13 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	return InitGenesis(ctx, am.keeper, am.accountKeeper, am.bankKeeper, &genesisState)
+	return staking.InitGenesis(ctx, am.keeper, am.accountKeeper, am.bankKeeper, &genesisState)
 }
 
 // ExportGenesis returns the exported genesis state as raw bytes for the staking
 // module.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	gs := ExportGenesis(ctx, am.keeper)
+	gs := staking.ExportGenesis(ctx, am.keeper)
 	return cdc.MustMarshalJSON(gs)
 }
 
@@ -165,13 +179,13 @@ func (AppModule) ConsensusVersion() uint64 { return 2 }
 
 // BeginBlock returns the begin blocker for the staking module.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
-	BeginBlocker(ctx, am.keeper)
+	staking.BeginBlocker(ctx, am.keeper)
 }
 
 // EndBlock returns the end blocker for the staking module. It returns no validator
 // updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return EndBlocker(ctx, am.keeper)
+	return staking.EndBlocker(ctx, am.keeper)
 }
 
 // AppModuleSimulation functions
