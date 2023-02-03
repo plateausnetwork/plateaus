@@ -8,7 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/distribution/client/cli"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rhizomplatform/plateaus/x/validation/keeper"
@@ -18,12 +17,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	"math/rand"
 	"time"
-)
-
-// ExternalAddrKey Module init related flags
-const (
-//ExternalAddrKey = "external_wallet"
-//EveryTime       = "every_time"
 )
 
 var (
@@ -68,14 +61,10 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx sdkclient.Context, mux
 }
 
 // GetTxCmd returns the root tx command for the validation module.
-func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd()
-}
+func (AppModuleBasic) GetTxCmd() *cobra.Command { return nil }
 
 // GetQueryCmd returns the root query command for the validation module.
-func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd()
-}
+func (AppModuleBasic) GetQueryCmd() *cobra.Command { return nil }
 
 // RegisterInterfaces implements InterfaceModule
 func (b AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) {}
@@ -144,10 +133,9 @@ func (AppModule) ConsensusVersion() uint64 { return 2 }
 
 // BeginBlock returns the begin blocker for the validation module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
-	// check if is time to update the store
-
+	// check if is time to update the storeZ
 	currentTime := time.Now().Minute()
-	everyTime := cast.ToInt(am.keeper.ModuleOpts[types.EveryTime])
+	everyTime := cast.ToInt(am.keeper.ModuleOpts[types.EveryTimeKey])
 
 	if everyTime > 0 && currentTime%everyTime == 0 && lastBeginBlockExec != currentTime {
 		lastBeginBlockExec = currentTime

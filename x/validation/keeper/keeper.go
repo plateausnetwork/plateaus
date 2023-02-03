@@ -22,25 +22,26 @@ type Keeper struct {
 	cdc        codec.BinaryCodec
 	paramSpace paramtypes.Subspace
 	authKeeper distrtypes.AccountKeeper
-	cacheStore sdk.KVStore
 
 	blockedAddrs map[string]bool
 	ModuleOpts   map[string]interface{}
+	service      service.PlateausValidator
 }
 
 // NewKeeper creates a new distribution Keeper instance
 func NewKeeper(
 	cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
-	ak distrtypes.AccountKeeper, cacheStore sdk.KVStore, blockedAddrs map[string]bool, moduleOpts map[string]interface{},
+	ak distrtypes.AccountKeeper, blockedAddrs map[string]bool,
+	moduleOpts map[string]interface{}, service service.PlateausValidator,
 ) Keeper {
 	return Keeper{
 		storeKey:     key,
 		cdc:          cdc,
 		paramSpace:   paramSpace,
 		authKeeper:   ak,
-		cacheStore:   cacheStore,
 		blockedAddrs: blockedAddrs,
 		ModuleOpts:   moduleOpts,
+		service:      service,
 	}
 }
 
@@ -50,36 +51,19 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // CheckValidator check if validator is allowed to receive rewards
-func (k Keeper) CheckValidator(ctx sdk.Context, valAddr sdk.ValAddress) {
+func (k Keeper) CheckValidator(ctx sdk.Context) {
 	k.Logger(ctx).
 		With("hash", ctx.HeaderHash().String()).
-		With("validator", valAddr.String()).
 		Info("starting check validator permission")
 
-	externalAdd := cast.ToString(k.ModuleOpts[types.ExternalAddrKey])
-	validations, err := service.GetValidations(valAddr, externalAdd)
+	ok, err := k.service.ConfirmValidator(ctx, cast.ToString(k.ModuleOpts[types.FlagExternalKeyPathKey]))
 
-	if err != nil {
+	if err != nil || !ok {
 		k.Logger(ctx).
 			With("hash", ctx.HeaderHash().String()).
-			With("validator", valAddr.String()).
-			Error("could not get validations", err)
+			Error("could not check validator", err)
 
-		return
-	}
-
-	for receivedAddr, isAble := range validations {
-		accAddr, err := sdk.AccAddressFromBech32(receivedAddr)
-
-		if err != nil {
-			k.Logger(ctx).With("received-addr", receivedAddr).Error("received acc address was not able to create an AccAddress")
-			continue
-		}
-
-		k.Logger(ctx).With("received-addr", receivedAddr).Info("setting validator validation")
-
-		val := sdk.ValAddress(accAddr.Bytes())
-		k.SetValidator(ctx, val, isAble)
+		panic(err)
 	}
 
 	k.Logger(ctx).Info("validator was checked")
@@ -120,32 +104,4 @@ func (k Keeper) createTx(ctx sdk.Context, cdc codec.ProtoCodecMarshaler, msg sdk
 	fmt.Println(res.Code)
 	fmt.Println(res)
 
-}
-
-func (k Keeper) SetValidator(ctx sdk.Context, valAddr sdk.ValAddress, value bool) {
-	bValue := []byte("false")
-
-	if value {
-		bValue = []byte("true")
-	}
-
-	k.cacheStore.Set(types.GetValidatorValidationRewardsKey(valAddr), bValue)
-
-	k.Logger(ctx).With("val-addr", valAddr.String()).Info("validator was checked", k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr)))
-}
-
-func (k Keeper) HasPermission(ctx sdk.Context, valAddr sdk.ValAddress) bool {
-	value := k.cacheStore.Get(types.GetValidatorValidationRewardsKey(valAddr))
-
-	if value == nil {
-		return false
-	}
-
-	sValue := string(value)
-
-	if sValue == "true" {
-		return true
-	}
-
-	return false
 }

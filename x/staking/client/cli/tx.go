@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -11,6 +12,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/rhizomplatform/plateaus/internal/polygon"
 	"github.com/rhizomplatform/plateaus/x/validation/service"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
@@ -31,16 +33,14 @@ func NewCreateValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			externalAdd, _ := cmd.Flags().GetString(FlagExternalAddress)
-			valAddr := sdk.ValAddress(clientCtx.FromAddress)
-
-			res, err := service.GetValidations(valAddr, externalAdd)
+			pathExternalKey, _ := cmd.Flags().GetString(FlagExternalKeyPath)
+			ok, err := service.ConfirmValidator(context.Background(), clientCtx.ChainID, polygon.Dial, pathExternalKey)
 
 			if err != nil {
 				return err
 			}
 
-			if res[clientCtx.FromAddress.String()] == false {
+			if !ok {
 				return errors.New("does not have permission")
 			}
 
@@ -72,7 +72,7 @@ func NewCreateValidatorCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired(cli.FlagAmount)
 	_ = cmd.MarkFlagRequired(cli.FlagPubKey)
 	_ = cmd.MarkFlagRequired(cli.FlagMoniker)
-	_ = cmd.MarkFlagRequired(FlagExternalAddress)
+	_ = cmd.MarkFlagRequired(FlagExternalKeyPath)
 
 	return cmd
 }

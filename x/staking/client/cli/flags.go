@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	FlagExternalAddress = "external-addr"
+	FlagExternalKeyPath = "external-key-path"
 )
 
 // FlagSetExternalAddress Returns the flagset for External Address related operations.
 func FlagSetExternalAddress() *flag.FlagSet {
 	fs := flag.NewFlagSet("", flag.ContinueOnError)
-	fs.String(FlagExternalAddress, "", "The external address to check your node license validator")
+	fs.String(FlagExternalKeyPath, "", "The external path containing the path for external key address to check your node license validator")
 	return fs
 }
 

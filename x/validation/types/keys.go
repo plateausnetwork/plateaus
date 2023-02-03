@@ -19,14 +19,11 @@ const (
 	// QuerierRoute is the querier route for distribution
 	QuerierRoute = ModuleName
 
-	// ExternalAddrKey is the key for config
-	ExternalAddrKey = "external_address"
+	// FlagExternalKeyPathKey is the key for config
+	FlagExternalKeyPathKey = "external-key-path"
 
-	// EveryTime is the key for config
-	EveryTime = "every_time"
-
-	// ValidatorAddr is the key for config
-	ValidatorAddr = "validator_address"
+	// EveryTimeKey is the key for config
+	EveryTimeKey = "every-time"
 )
 
 // Keys for distribution store

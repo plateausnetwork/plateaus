@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/store/cachekv"
-	"github.com/cosmos/cosmos-sdk/store/mem"
+	"github.com/rhizomplatform/plateaus/internal/polygon"
+	"github.com/rhizomplatform/plateaus/x/validation/service"
 	"io"
 	"net/http"
 	"os"
@@ -51,7 +51,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distrcosmos "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/distribution"
 	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -116,7 +116,6 @@ import (
 	"github.com/rhizomplatform/plateaus/x/claims"
 	claimskeeper "github.com/rhizomplatform/plateaus/x/claims/keeper"
 	claimstypes "github.com/rhizomplatform/plateaus/x/claims/types"
-	"github.com/rhizomplatform/plateaus/x/distribution"
 	"github.com/rhizomplatform/plateaus/x/epochs"
 	epochskeeper "github.com/rhizomplatform/plateaus/x/epochs/keeper"
 	epochstypes "github.com/rhizomplatform/plateaus/x/epochs/types"
@@ -255,7 +254,6 @@ type Plateaus struct {
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
-	ValidationKeeper validationkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
@@ -283,6 +281,7 @@ type Plateaus struct {
 	EpochsKeeper     epochskeeper.Keeper
 	VestingKeeper    vestingkeeper.Keeper
 	RecoveryKeeper   *recoverykeeper.Keeper
+	ValidationKeeper validationkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -419,7 +418,7 @@ func NewPlateaus(
 	govRouter := govtypes.NewRouter()
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distrcosmos.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(distrtypes.RouterKey, distribution.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(erc20types.RouterKey, erc20.NewErc20ProposalHandler(&app.Erc20Keeper)).
@@ -442,8 +441,10 @@ func NewPlateaus(
 		app.AccountKeeper, app.BankKeeper, &stakingKeeper, app.DistrKeeper,
 	)
 
+	servicePlateausValidator := service.New(polygon.Dial)
 	app.ValidationKeeper = validationkeeper.NewKeeper(appCodec, keys[validationtypes.StoreKey],
-		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, cachekv.NewStore(mem.NewStore()), app.ModuleAccountAddrs(), cast.ToStringMap(appOpts.Get(validationtypes.ModuleName)),
+		app.GetSubspace(validationtypes.ModuleName), app.AccountKeeper, app.ModuleAccountAddrs(),
+		cast.ToStringMap(appOpts.Get(validationtypes.ModuleName)), servicePlateausValidator,
 	)
 
 	// register the staking hooks
@@ -571,7 +572,7 @@ func NewPlateaus(
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		validation.NewAppModule(appCodec, app.ValidationKeeper),
-		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.ValidationKeeper),
+		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		stakingplateaus.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -728,7 +729,7 @@ func NewPlateaus(
 		// mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		stakingplateaus.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		validation.NewAppModule(appCodec, app.ValidationKeeper),
-		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.ValidationKeeper),
+		distribution.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),

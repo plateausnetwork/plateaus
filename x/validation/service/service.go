@@ -1,55 +1,72 @@
 package service
 
 import (
-	"bytes"
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/rhizomplatform/plateaus/internal/polygon"
+	"github.com/rhizomplatform/plateaus/internal/polygon/crypto"
+	"github.com/rhizomplatform/plateaus/x/validation/client/rpc"
 	"github.com/rhizomplatform/plateaus/x/validation/types"
-	"io"
-	"net/http"
-	"time"
 )
 
-//TODO: check if will be moved to config
-const urlPlateausValidation = "https://vyd0yyst26.execute-api.us-east-1.amazonaws.com/development/nodes"
+type PlateausValidator struct {
+	dialer polygon.Dialer
+}
 
-type Validations map[string]bool
-
-func GetValidations(valAddr sdk.ValAddress, externalAddr string) (Validations, error) {
-	accAddr := sdk.AccAddress(valAddr.Bytes())
-
-	c := &http.Client{
-		Timeout: time.Millisecond * 5000,
+func New(dialer polygon.Dialer) PlateausValidator {
+	return PlateausValidator{
+		dialer: dialer,
 	}
+}
 
-	req := types.NewGetValidationsRequest(externalAddr)
-	bodyByte, err := json.Marshal(req)
+func (pv PlateausValidator) ConfirmValidator(ctx sdk.Context, externalKey string) (bool, error) {
+	return ConfirmValidator(ctx.Context(), ctx.ChainID(), pv.dialer, externalKey)
+}
+
+func ConfirmValidator(
+	ctx context.Context,
+	plateausChainID string,
+	dialer polygon.Dialer,
+	pathExternalKey string,
+) (bool, error) {
+	fromAddress, privateKeyPolygon, err := crypto.AddressFromPrivateKey(pathExternalKey)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("could not json.Marshal: %s", err))
+		return false, errors.New("invalid private key")
 	}
 
-	bodyBuf := bytes.NewReader(bodyByte)
-	r, err := c.Post(fmt.Sprintf("%s/%s", urlPlateausValidation, accAddr), "application/json", bodyBuf)
+	remoteRPC := types.GetRemoteRPC(plateausChainID)
+	plateausValidatorTokenAddr := types.GetTokenAddr(plateausChainID)
+	clientPolygon, err := dialer(remoteRPC)
+
+	defer clientPolygon.Close()
 
 	if err != nil {
-		return nil, errors.New("could not check validator permission")
+		return false, errors.New(fmt.Sprintf("was not able to Dial: %s", err))
 	}
 
-	defer r.Body.Close()
+	remoteChainId, err := clientPolygon.ChainID(ctx)
 
-	if r.StatusCode == http.StatusForbidden {
-		return nil, errors.New("validator isn't able to check node")
+	if err != nil {
+		return false, errors.New(fmt.Sprintf("was not able to ChainID: %s", err))
 	}
 
-	b, err := io.ReadAll(r.Body)
-	resp := map[string]bool{}
+	addressPlateausValidatorPolygon := common.HexToAddress(plateausValidatorTokenAddr)
+	plateausValidatorContract, err := types.NewPlateausValidator(addressPlateausValidatorPolygon, clientPolygon)
 
-	if err := json.Unmarshal(b, &resp); err != nil {
-		return nil, errors.New("json.Unmarshal node validation")
+	if err != nil {
+		return false, errors.New(fmt.Sprintf("was not able to create NewPlateausValidator: %s", err))
 	}
 
-	return resp, nil
+	rpcClient := rpc.New(clientPolygon, remoteChainId, plateausValidatorContract, *fromAddress, privateKeyPolygon)
+	balance, err := rpcClient.BalanceOf()
+
+	if err != nil {
+		return false, errors.New(fmt.Sprintf("was not able to BalanceOf: %s", err))
+	}
+
+	return balance > 0, nil
 }
