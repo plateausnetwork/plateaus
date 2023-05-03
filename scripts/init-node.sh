@@ -1,3 +1,8 @@
+if ! command -v jq > /dev/null 2>&1; then
+  echo >&2 "jq not installed."
+  exit 1
+fi
+
 NODENAME=`echo $RANDOM | md5sum | head -c 10; echo;`
 VALIDATORKEY="node-$NODENAME"
 CHAINID="plateaus_432-1"
@@ -5,21 +10,30 @@ MONIKER="node-$NODENAME"
 KEYRING="file"
 KEYALGO="eth_secp256k1"
 LOGLEVEL="info"
-LOCALTESTNET="/home/ubuntu/.plateausd"
+LOCALTESTNET="$HOME/.plateausd"
 # to trace evm
 #TRACE="--trace"
 TRACE=""
 
+# Check if the folder exists
+if test -d $LOCALTESTNET; then
+    echo "the folder $LOCALTESTNET exists."
+    exit
+fi
+
 PEERS=""
-GENESISJSON=`curl http://chain-01.rhizom.me:26657/genesis | jq '.result.genesis'`
+
+if [ ! PEERS ]; then
+  echo "peers cannot be empty"
+  exit
+fi
+
+GENESISJSON=`curl http://sentry-nodes.rhizom.me:26657/genesis | jq '.result.genesis'`
 
 if [ ! $GENESISJSON ]; then
   echo "genesis cannot be empty"
   exit
 fi
-
-## creating a localnet folder
-rm -rf `pwd`/localnet-setup && mkdir $LOCALTESTNET
 
 ## Set client config
 plateausd config keyring-backend $KEYRING --home=$LOCALTESTNET
@@ -41,7 +55,7 @@ echo $GENESISJSON > $LOCALTESTNET/config/genesis.json
 sleep 1
 
 # setting peers from config.toml
-#sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = $PEERS/" $LOCALTESTNET/config/config.toml
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $LOCALTESTNET/config/config.toml
 
 ## Run this to ensure everything worked and that the genesis file is setup correctly
 plateausd validate-genesis --home=$LOCALTESTNET
